@@ -43,3 +43,56 @@ footer{
     align-items: center;
     padding: 8px 16px;
 }
+
+/* Event card */
+.event-card{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.event-card .event-date{
+    text-align: center;
+    :first-child{
+        color: #b4d4ee;
+        font-weight: bold;
+    }
+}
+
+.event-thumb{
+    width: 60px;
+    height: 60px;
+    overflow: hidden;
+    display: flex;
+    border: solid #fff5ff 1px;
+    flex-shrink: 0;
+    img{
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        margin: auto;
+        border-radius: 4px;
+    }
+}
+
+.event-card .event-details{
+    text-align: left;
+    margin: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    row-gap: 8px;
+    p{
+        margin: 0;
+    }
+}
+
+.event-card .event-name{
+    grid-column: 1/3;
+}
+
+.event-card .event-venue, .event-card .event-sns{
+    display: flex;
+    gap: 8px;
+}

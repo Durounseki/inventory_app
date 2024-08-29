@@ -1,0 +1,22 @@
+<div class="event-card">
+    <div class="event-date">
+        <p><%= dayjs(event.date).format('MMMM').toUpperCase().slice(0,3) %></p>
+        <p><%= dayjs(event.date).format('D') %></p>
+    </div>
+    <div class="event-thumb">
+        <img src="<%= event.flyer.src %>" alt=" <%= event.flyer.alt %>">
+    </div>
+    <div class="event-details">
+        <p class="event-name">
+            <%= event.name%>
+        </p>
+        <p class="event-venue">
+            <i class="fa-regular fa-map"></i><%= event.venue.country %>
+        </p>
+        <p class="event-sns">
+            <% for(sns of event.sns) { %>
+                <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
+            <% } %>
+        </p>
+    </div>
+</div>

@@ -20,6 +20,13 @@ app.set("view engine", "ejs");
 const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 
+//Date formatting
+const dayjs = require("dayjs");
+app.use((req,res,next) => {
+    res.locals.dayjs = dayjs;
+    next();
+});
+
 //Render the views
 //Header
 //Logo

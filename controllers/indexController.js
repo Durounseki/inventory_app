@@ -1,7 +1,13 @@
+//Database
+const db = require('../db/queries');
+
 //Create index views
 
+
 async function getHome(req, res){
-    res.render("index",{title: "Home"});
+    const events = await db.getAllEvents();
+    console.log(events[0].venue)
+    res.render("index",{title: "Home", events: events});
 };
 
 module.exports = {

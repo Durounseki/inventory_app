@@ -1,0 +1,12 @@
+<header>
+    <div class="main-logo">
+        <img src="<%= mainLogo.src %>" alt="<%= mainLogo.alt %>">
+    </div>
+    <nav>
+        <% for (let i = 0; i < navLinks.length; i++) { %>
+            <a href="<%= navLinks[i].href %>">
+                <%= navLinks[i].text %>
+            </a>
+        <% } %>
+    </nav>
+</header>

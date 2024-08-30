@@ -46,17 +46,28 @@ footer{
 
 /* Event card */
 .event-card{
+    max-width: 400px;
     display: flex;
     align-items: center;
     gap: 16px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    background-color: #202020;
+    border-radius: 16px;
+    padding: 16px 24px;
+    box-sizing: border-box;
 }
 
 .event-card .event-date{
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     :first-child{
         color: #b4d4ee;
         font-weight: bold;
+    }
+    p{
+        margin: 0;
     }
 }
 
@@ -65,7 +76,6 @@ footer{
     height: 60px;
     overflow: hidden;
     display: flex;
-    border: solid #fff5ff 1px;
     flex-shrink: 0;
     img{
         max-width: 100%;
@@ -90,9 +100,86 @@ footer{
 
 .event-card .event-name{
     grid-column: 1/3;
+    font-size: larger;
+    font-weight: bold;
 }
 
 .event-card .event-venue, .event-card .event-sns{
+    font-size: medium;
     display: flex;
     gap: 8px;
+}
+
+.event-card .event-sns{
+    :first-child{
+        margin-left: auto;
+    }
+}
+
+/* Searchbar */
+.searchbar{
+    max-width: 400px;
+    padding: 8px 16px;
+    height: 40px;
+    background-color: #202020;
+    border-radius: 20px;
+    box-sizing: border-box;
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.search, .clear-search, .searchbar input{
+    border: none;
+    background-color: #20202000;
+    color:#fff5ff;
+}
+
+.searchbar input{
+    flex: 1;
+    padding: 4px 8px;
+    height: 24px;
+    border: solid 1px #20202000;
+    border-radius: 12px;
+    box-sizing: border-box;
+}
+
+input:focus{
+    height: 24px;
+    border: solid 1px #b4d4ee;
+    border-radius: 12px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.clear-search{
+    display: none;
+}
+
+.clear-search.show{
+    display: inline;
+}
+
+.search-container{
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    /* justify-content: space-between; */
+}
+
+.create-button{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #ffa6db;
+    font-size: 24px;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    i{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+    }
 }

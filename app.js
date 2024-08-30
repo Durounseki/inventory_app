@@ -4,8 +4,9 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require('node:path');
-//Router
+//Routers
 const indexRouter = require("./routes/indexRouter");
+const eventsRouter = require("./routes/eventsRouter");
 //Set the url encoder to handle form post request
 app.use(express.urlencoded({extended: true}));
 
@@ -61,8 +62,11 @@ app.use( (req,res,next) => {
 });
 
 
-//home
+//Home
 app.use("/",indexRouter);
+//Events
+app.use("/events",eventsRouter);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`App listening on port ${PORT}!`));

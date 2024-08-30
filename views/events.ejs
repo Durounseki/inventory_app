@@ -1,0 +1,10 @@
+<% extend('layout') %>
+<div class="search-container">
+    <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
+    <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
+</div>
+<% for(event of events) { %>
+
+    <%- include("./partials/event_card.ejs",{event: event}) %>
+
+<% } %>

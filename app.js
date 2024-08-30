@@ -39,11 +39,11 @@ const mainLogo = {
 //Navigation links
 const navLinks = [
     {href: "/", text: "Home" },
-    {href: "events", text: "Events"},
-    {href: "artists", text: "Artists"},
-    {href: "djs", text: "DJs"},
-    {href: "about", text: "About" },
-    {href: "contact", text: "Contact"},
+    {href: "/events", text: "Events"},
+    {href: "/artists", text: "Artists"},
+    {href: "/djs", text: "DJs"},
+    {href: "/about", text: "About" },
+    {href: "/contact", text: "Contact"},
 ];
 
 //Github link

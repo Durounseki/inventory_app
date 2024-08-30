@@ -1,0 +1,56 @@
+<% extend('layout') %>
+
+<div class="event-form-container">
+    <h2>Add New Event</h1>
+    
+      <form action="/events/create" method="POST" enctype="multipart/form-data" class="create-event-form">
+        <label for="event-name">Event Name:</label>
+        <input type="text" id="event-name" name="event-name" required placeholder="The Dance Thread">
+    
+        <div class="form-separator"></div>
+        <h3 class="event-form-section-header">Description</h2>
+    
+        <label for="event-headline">Headline:</label>
+        <input type="text" id="event-headline" name="event-headline" placeholder="Asia's premier inclusive community">
+    
+        <label for="event-body">Body:</label>
+        <textarea id="event-body" name="event-body" placeholder="Dance, share, celebrate yourself!"></textarea>
+    
+        <label for="event-cta">Call to Action:</label>
+        <input type="text" id="event-cta" name="event-cta" placeholder="Join the movement!">
+    
+        <div class="form-separator"></div>
+        <h3 class="event-form-section-header" class="event-form-section-header">Venue</h2>
+    
+        <label for="event-venueCountry">Country:</label>
+        <input type="text" id="event-venueCountry" name="event-venueCountry" required>
+        <label for="event-venueCity">City:</label>
+        <input type="text" id="event-venueCity" name="event-venueCity" required>
+    
+        <label for="event-venueName">Venue:</label>
+        <input type="text" id="event-venueName" name="event-venueName" required>
+    
+        <label for="event-venueUrl">Location:</label>
+        <input type="text" id="event-venueUrl" name="event-venueUrl" placeholder="Google Maps link">
+    
+        <div class="form-separator"></div>
+        <h3 class="event-form-section-header">Date</h2>
+        <label for="event-date">Date:</label>
+        <input type="date" id="event-date" name="event-date" required>
+    
+        <div class="form-separator"></div>
+        <h3 class="event-form-section-header">Social Media</h2>
+    
+        <div class="event-sns-container">
+        </div>
+        <button type="button" id="event-add-sns">Add Link</button>
+    
+        <div class="form-separator"></div>
+        <h3 class="event-form-section-header">Flyer</h2>
+        <label for="event-flyer">Upload Image:</label>
+        <input type="file" id="event-flyer" name="event-flyer">
+    
+        <button type="submit" class="submit-event">Add Event</button>
+    
+      </form>
+</div>

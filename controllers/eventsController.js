@@ -9,6 +9,11 @@ async function getEvents(req, res){
     res.render("events",{title: "Events", events: events});
 };
 
+async function getCreateEvent(req, res){
+    res.render("create-event",{title: "Create new event"});
+}
+
 module.exports = {
     getEvents,
+    getCreateEvent
 }

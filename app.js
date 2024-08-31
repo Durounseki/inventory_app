@@ -1,3 +1,9 @@
+const userId = process.getuid();
+console.log('User ID:', userId);
+const os = require('os');
+
+const userInfo = os.userInfo(501); // Pass the UID to userInfo()
+console.log('Username for UID 501:', userInfo.username);
 //Load environment variables
 require("dotenv").config();
 

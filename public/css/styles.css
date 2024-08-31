@@ -92,6 +92,7 @@ footer{
 }
 
 .event-card .event-details{
+    flex: 1;
     text-align: left;
     margin: 0;
     display: grid;

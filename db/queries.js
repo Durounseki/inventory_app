@@ -12,38 +12,51 @@ const snsFaClass = {
     "youtube": "fa-brands fa-youtube" 
 };
 
-async function createNewEvent(eventInfo){
-    const eventName = eventInfo.eventName;
+async function createNewEvent(eventInfo,flyer){
+    console.log(eventInfo);
+    const eventName = eventInfo["event-name"];
     const eventDescription = {
-        "headline": eventInfo.eventHeadline,
-        "body": eventInfo.eventBody,
-        "cta": eventInfo.eventCta
+        "headline": eventInfo["event-headline"],
+        "body": eventInfo["event-body"],
+        "cta": eventInfo["event-cta"]
     };
     const eventVenue = {
-        "name": eventInfo.eventVenueName,
-        "url": eventInfo.eventVenueUrl,
-        "country": eventInfo.eventVenueCountry,
-        "city": eventInfo.eventVenueCity
+        "name": eventInfo["event-venue-name"],
+        "url": eventInfo["event-venue-url"],
+        "country": eventInfo["event-venue-country"],
+        "city": eventInfo["event-venue-city"]
     };
-    const eventDate = eventInfo.eventDate;
-    const sns = [];
+    const eventDate = eventInfo["event-date"];
+    const eventSns = [];
     for (const [key, value] of Object.entries(eventInfo)) {
-        if (key.startsWith('eventSns') && key.endsWith('Platform')) {
-          const index = key.match(/\d+/)[0]; // Extract the number from the key
-          const urlKey = `eventSns${index}Url`;
-  
-          snsData.push({
-            name: value.toLowerCase(),
-            url: req.body[urlKey],
-            faClass: snsFaClass[value.toLowerCase()] // Assuming you have this function
-          });
+        if (key.startsWith('event-sns') && key.endsWith('platform')) {
+            const index = key.match(/\d+/)[0]; // Extract the number from the key
+            const urlKey = `event-sns-${index}-url`;
+
+            eventSns.push({
+                name: value.toLowerCase(),
+                url: eventInfo[urlKey],
+                faClass: snsFaClass[value.toLowerCase()]
+            });
         }
     }
     const eventPicture = {
-        "src": eventInfo.eventFlyer,
-        "alt": eventInfo.eventName
-    }
-
+        "src": flyer.path.replace('public/',''),
+        "alt": eventInfo["event-name"]
+    };
+    console.log(
+        "name: "+eventName,
+        "description: " + eventDescription, 
+        "venue: " + eventVenue,
+        "date: " + eventDate,
+        "sns: " + eventSns,
+        "flyer: " + eventPicture
+    );
+    pool.query(
+        'INSERT INTO events (name, description, venue, date, sns, flyer) VALUES ($1, $2, $3, $4, $5, $6)',
+        [eventName, eventDescription, eventVenue, eventDate, eventSns, eventPicture]
+    );
+    console.log('Event added successfully!');
 }
 
 module.exports = {

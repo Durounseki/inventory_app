@@ -19,7 +19,7 @@ const upload = multer({storage: storage});
 
 async function getEvents(req, res){
     const events = await db.getAllEvents();
-    res.render("events",{title: "Events", events: events});
+    res.render("events",{title: "Events", events: events, featuredEvent: events[0]});
 };
 
 async function getCreateEvent(req, res){

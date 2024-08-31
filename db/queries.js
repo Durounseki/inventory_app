@@ -1,7 +1,7 @@
 const pool = require("./pool");
 
 async function getAllEvents() {
-    const { rows } = await pool.query("SELECT * FROM events");
+    const { rows } = await pool.query("SELECT * FROM events ORDER BY date ASC");
     return rows;
 };
 

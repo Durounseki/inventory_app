@@ -1,10 +1,20 @@
 <% extend('layout') %>
-<div class="search-container">
-    <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
-    <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
+<div class="event-dashboard">
+    <div class="event-schedule">
+        <div class="search-container">
+            <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
+            <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
+        </div>
+    
+        <div class="event-cards">
+            <% for(event of events) { %>
+    
+                <%- include("./partials/event_card.ejs",{event: event}) %>
+    
+            <% } %>
+        </div>
+    </div>
+    <div class="event-container">
+        <%- include("./partials/event_info.ejs",{event: featuredEvent}) %>
+    </div>
 </div>
-<% for(event of events) { %>
-
-    <%- include("./partials/event_card.ejs",{event: event}) %>
-
-<% } %>

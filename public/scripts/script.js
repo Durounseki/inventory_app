@@ -21,6 +21,19 @@ function showClearButton(event){
     }
 }
 
+//Display selected event
+const eventCards = document.querySelectorAll('.event-card');
+console.log(eventCards);
+
+eventCards.forEach(card => {
+    card.addEventListener('click',showEventInfo);
+});
+
+function showEventInfo(event){
+    const eventId = event.target.closest('.event-card').dataset.eventId;
+    console.log(eventId);
+}
+
 //Create Event Form
 //Resize text area
 const textAreas = document.querySelectorAll('textarea');

@@ -1,4 +1,4 @@
-<div class="event-card">
+<div class="event-card" data-event-id = "<%= event.id %>">
     <div class="event-date">
         <p><%= dayjs(event.date).format('MMMM').toUpperCase().slice(0,3) %></p>
         <p><%= dayjs(event.date).format('D') %></p>

@@ -20,18 +20,18 @@ const snsFaClass = {
 async function createNewEvent(eventInfo,flyer){
     console.log(eventInfo);
     const eventName = eventInfo["event-name"];
+    const eventDate = eventInfo["event-date"];
+    const eventCountry = eventInfo["event-venue-country"];
+    const eventCity = eventInfo["event-venue-city"];
+    const eventVenue = {
+        "name": eventInfo["event-venue-name"],
+        "url": eventInfo["event-venue-url"]
+    };
     const eventDescription = {
         "headline": eventInfo["event-headline"],
         "body": eventInfo["event-body"],
         "cta": eventInfo["event-cta"]
     };
-    const eventVenue = {
-        "name": eventInfo["event-venue-name"],
-        "url": eventInfo["event-venue-url"],
-        "country": eventInfo["event-venue-country"],
-        "city": eventInfo["event-venue-city"]
-    };
-    const eventDate = eventInfo["event-date"];
     const eventSns = [];
     for (const [key, value] of Object.entries(eventInfo)) {
         if (key.startsWith('event-sns') && key.endsWith('platform')) {
@@ -49,17 +49,9 @@ async function createNewEvent(eventInfo,flyer){
         "src": flyer.path.replace('public/',''),
         "alt": eventInfo["event-name"]
     };
-    console.log(
-        "name: "+eventName,
-        "description: " + eventDescription, 
-        "venue: " + eventVenue,
-        "date: " + eventDate,
-        "sns: " + eventSns,
-        "flyer: " + eventPicture
-    );
     pool.query(
-        'INSERT INTO events (name, description, venue, date, sns, flyer) VALUES ($1, $2, $3, $4, $5, $6)',
-        [eventName, eventDescription, eventVenue, eventDate, eventSns, eventPicture]
+        'INSERT INTO events (name, date, country, city, venue, description, sns, flyer) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+        [eventName, eventDate, eventCountry, eventCity, eventVenue, eventDescription, eventSns, eventPicture]
     );
     console.log('Event added successfully!');
 }

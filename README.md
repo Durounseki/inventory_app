@@ -3,6 +3,7 @@
 This project is part of [__The Dance Thread__](https://thedancethread.com/), an inclusive dance community. The functionality of the app builds on the lessons on Express.js and PostgreSQL on [__The Odin Project__](https://www.theodinproject.com/).
 
 ## To Do List
+
 * [ ] Add Home page
 * [ ] Add About page
 * [ ] Add contact page

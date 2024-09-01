@@ -11,39 +11,47 @@ const createEventsTable = `
             CREATE TABLE IF NOT EXISTS events (
                 id SERIAL PRIMARY KEY,
                 name TEXT NOT NULL,
-                description JSONB,
-                venue JSONB NOT NULL,
                 date DATE NOT NULL,
+                country TEXT NOT NULL,
+                city TEXT NOT NULL,
+                venue JSONB NOT NULL,
+                description JSONB NOT NULL,
                 sns JSONB[] NOT NULL,
                 flyer JSONB NOT NULL
             );
         `;
 const populateEvents = `
-            INSERT INTO events (name, description, venue, date, sns, flyer)
-            VALUES (
-                'Salsa Bachata Temptation Singapore',
-                '{
-                    "headline": "Experience the energy of Asia''s hottest Latin dance festival!",
-                    "body": "Get ready to learn from world-class instructors, witness incredible performances, and party all night long with the best dancers in Asia and renowned DJs.",
-                    "cta": "Don''t miss out on this unforgettable experience!"
-                }',
-                '{
-                    "name": "MAX Atria Garnet",
-                    "url": "https://www.google.com/maps/place/Singapore+EXPO+Meeting+Rooms/@1.3332953,103.9567683,15z/data=!4m6!3m5!1s0x31da3d29b4a86847:0x62aaab711af2fcdf!8m2!3d1.3332953!4d103.9567683!16s%2Fg%2F11btww6m0q?entry=ttu"
-                }', 
-                '2024-08-09',
-                ARRAY[
-                    '{"name": "website", "url": "https://salsabachatatemptation.com/", "faClass": "fa-solid fa-globe"}',
-                    '{"name": "facebook", "url": "https://www.facebook.com/SBTS2023", "faClass": "fa-brands fa-square-facebook"}',
-                    '{"name": "instagram", "url": "https://www.instagram.com/Salsabachatatemptationsg/", "faClass": "fa-brands fa-instagram"}',
-                    '{"name": "youtube", "url": "https://www.youtube.com/channel/UCnFxI6FMl4lAxA1UmY6d2ng", "faClass": "fa-brands fa-youtube"}'
-                ]::jsonb[],
-                '{
-                    "src": "../public/images/sbts.png",
-                    "alt": "SBTS"
-                }'
-            );
-        `;
+            INSERT INTO events (name,date,country,city,venue,description,sns,flyer)
+            SELECT name, date, venue->>'country' AS country, venue->>'city' AS city, venue-'country'-'city' AS venue, description, sns, flyer
+            FROM events_copy
+`;
+//Sample row of the events table
+// const populateEvents = `
+//             INSERT INTO events (name, description, venue, date, sns, flyer)
+//             VALUES (
+//                 'Salsa Bachata Temptation Singapore',
+//                 '{
+//                     "headline": "Experience the energy of Asia''s hottest Latin dance festival!",
+//                     "body": "Get ready to learn from world-class instructors, witness incredible performances, and party all night long with the best dancers in Asia and renowned DJs.",
+//                     "cta": "Don''t miss out on this unforgettable experience!"
+//                 }',
+//                 '{
+//                     "name": "MAX Atria Garnet",
+//                     "url": "https://www.google.com/maps/place/Singapore+EXPO+Meeting+Rooms/@1.3332953,103.9567683,15z/data=!4m6!3m5!1s0x31da3d29b4a86847:0x62aaab711af2fcdf!8m2!3d1.3332953!4d103.9567683!16s%2Fg%2F11btww6m0q?entry=ttu"
+//                 }', 
+//                 '2024-08-09',
+//                 ARRAY[
+//                     '{"name": "website", "url": "https://salsabachatatemptation.com/", "faClass": "fa-solid fa-globe"}',
+//                     '{"name": "facebook", "url": "https://www.facebook.com/SBTS2023", "faClass": "fa-brands fa-square-facebook"}',
+//                     '{"name": "instagram", "url": "https://www.instagram.com/Salsabachatatemptationsg/", "faClass": "fa-brands fa-instagram"}',
+//                     '{"name": "youtube", "url": "https://www.youtube.com/channel/UCnFxI6FMl4lAxA1UmY6d2ng", "faClass": "fa-brands fa-youtube"}'
+//                 ]::jsonb[],
+//                 '{
+//                     "src": "../public/images/sbts.png",
+//                     "alt": "SBTS"
+//                 }'
+//             );
+//         `;
 const createArtistsTable = `
             CREATE TABLE IF NOT EXISTS artists (
                 id SERIAL PRIMARY KEY,

@@ -46,7 +46,7 @@ async function createNewEvent(eventInfo,flyer){
         }
     }
     const eventPicture = {
-        "src": flyer.path.replace('public/',''),
+        "src": flyer.path.replace('public',''),
         "alt": eventInfo["event-name"]
     };
     pool.query(
@@ -56,8 +56,17 @@ async function createNewEvent(eventInfo,flyer){
     console.log('Event added successfully!');
 }
 
+async function searchByCountry(country){
+    const { rows } = await pool.query(
+        "SELECT * FROM events WHERE country ILIKE $1 ORDER BY date ASC",
+        [`%${country}%`]
+    );
+    return rows;
+}
+
 module.exports = {
     getAllEvents,
     getEvent,
-    createNewEvent
+    createNewEvent,
+    searchByCountry
 };

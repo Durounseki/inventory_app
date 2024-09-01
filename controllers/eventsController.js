@@ -43,6 +43,7 @@ async function getCreateEvent(req, res){
     res.render("create-event",{title: "Create new event"});
 }
 
+//Create new event
 const postCreateEvent = [
     upload.single('event-flyer'),
     async (req, res) => {
@@ -53,9 +54,22 @@ const postCreateEvent = [
     }
 ];
 
+//Search event
+async function searchByCountry(req, res){
+    const country = req.body.country;
+    console.log(country);
+    const foundEvents = await db.searchByCountry(country);
+    res.render("events",{title: "Events", events: foundEvents, featuredEvent: foundEvents[0]});
+}
+
+//Edit event
+
+//Delete event
+
 module.exports = {
     getEvents,
     getEvent,
     getCreateEvent,
-    postCreateEvent
+    postCreateEvent,
+    searchByCountry
 }

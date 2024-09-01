@@ -1,5 +1,7 @@
 //Database
 const db = require('../db/queries');
+//Dates
+const dayjs = require('dayjs');
 //Form validation
 const { body, validationResult } = require("express-validator");
 //Handle file uploads
@@ -14,12 +16,27 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({storage: storage});
+//EJS engine
+const ejs = require('ejs');
 
 //Create event views
 
 async function getEvents(req, res){
     const events = await db.getAllEvents();
     res.render("events",{title: "Events", events: events, featuredEvent: events[0]});
+};
+
+async function getEvent(req, res){
+    const eventRow = await db.getEvent(req.params.id);
+    ejs.renderFile(process.cwd() + '/views/partials/event_info.ejs',{event: eventRow, dayjs: dayjs},{},(err, eventInfoHTML) => {
+        if(err) {
+            console.error('Error rendering template:', err);
+            res.status(500).send('Internal Server Error');
+        }else{
+            res.send(eventInfoHTML);
+        }
+    });
+
 };
 
 async function getCreateEvent(req, res){
@@ -38,6 +55,7 @@ const postCreateEvent = [
 
 module.exports = {
     getEvents,
+    getEvent,
     getCreateEvent,
     postCreateEvent
 }

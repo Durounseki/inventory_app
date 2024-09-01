@@ -31,7 +31,31 @@ eventCards.forEach(card => {
 
 function showEventInfo(event){
     const eventId = event.target.closest('.event-card').dataset.eventId;
-    console.log(eventId);
+    //Get the event information from the server as an html string
+    fetch(`events/${eventId}`)
+    .then(response => {
+        if (!response.ok) {
+            // Network or server error
+            if (response.status === 404) {
+                throw new Error('Row not found'); 
+            } else {
+                // Try to parse the error response from the server
+                return response.json().then(errorData => {
+                    throw new Error(errorData.message || 'Server error'); 
+                });
+            }
+        }
+        return response.text();
+    })
+    .then(eventInfo => {
+        const eventContainer = document.querySelector('.event-container');
+        //Update event info
+        eventContainer.innerHTML = eventInfo;
+    })
+    .catch(error => {
+        console.error('Error fetching data:', error);
+        alert('An error occurred: ' + error.message);
+    });
 }
 
 //Create Event Form

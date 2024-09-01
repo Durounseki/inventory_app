@@ -5,6 +5,11 @@ async function getAllEvents() {
     return rows;
 };
 
+async function getEvent(eventId){
+    const { rows } = await pool.query(`SELECT * FROM events WHERE id = ${eventId}`);
+    return rows[0];
+}
+
 const snsFaClass = {
     "website": "fa-solid fa-globe",
     "facebook": "fa-brands fa-square-facebook",
@@ -61,5 +66,6 @@ async function createNewEvent(eventInfo,flyer){
 
 module.exports = {
     getAllEvents,
+    getEvent,
     createNewEvent
 };

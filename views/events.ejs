@@ -5,7 +5,11 @@
             <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
             <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
         </div>
-    
+        <div class="filter-container">
+            <p class="filter">
+                Filter by
+            </p>
+        </div>
         <div class="event-cards">
             <% for(event of events) { %>
     

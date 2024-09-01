@@ -23,7 +23,16 @@ const ejs = require('ejs');
 
 async function getEvents(req, res){
     const events = await db.getAllEvents();
-    res.render("events",{title: "Events", events: events, featuredEvent: events[0]});
+    const eventId = req.query.event;
+    let selectedEvent;
+    if(eventId){
+        selectedEvent = await db.getEvent(eventId);
+    }else{
+        //For the moment let's render the earliest coming event the first time the page is load
+        return res.redirect(302,`/events?event=${events[0].id}`);
+    }
+    
+    res.render("events",{title: "Events", events: events, featuredEvent: selectedEvent});
 };
 
 async function getEvent(req, res){
@@ -36,7 +45,6 @@ async function getEvent(req, res){
             res.send(eventInfoHTML);
         }
     });
-
 };
 
 async function getCreateEvent(req, res){
@@ -57,7 +65,6 @@ const postCreateEvent = [
 //Search event
 async function searchByCountry(req, res){
     const country = req.body.country;
-    console.log(country);
     const foundEvents = await db.searchByCountry(country);
     res.render("events",{title: "Events", events: foundEvents, featuredEvent: foundEvents[0]});
 }

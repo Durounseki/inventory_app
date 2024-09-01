@@ -31,8 +31,12 @@ eventCards.forEach(card => {
 
 function showEventInfo(event){
     const eventId = event.target.closest('.event-card').dataset.eventId;
+    fetchEventInfo(eventId);
+}
+
+function fetchEventInfo(eventId){
     //Get the event information from the server as an html string
-    fetch(`events/${eventId}`)
+    fetch(`/events/${eventId}`)
     .then(response => {
         if (!response.ok) {
             // Network or server error
@@ -51,12 +55,41 @@ function showEventInfo(event){
         const eventContainer = document.querySelector('.event-container');
         //Update event info
         eventContainer.innerHTML = eventInfo;
+        //Update URL
+        const currentUrl = new URL(window.location.href);
+        const currentParams = new URLSearchParams(currentUrl.search);
+        //Check if we already visited the event page
+        //When this function is called inside showEventInfo
+        //the currentUrl is that before updating the url below
+        //In this case clicking a new event card will give a eventId that doesn't match
+        //the current params, in this case we push a new state to the history
+        //When it is called inside the popstate handler, the current params correspond
+        //to the url either back or forward in the history and the eventId is extracted
+        //from the currentParams. In this case we replace the state in the history.
+        //This enables back and forward in the browser history.
+        const isNewEvent = !currentParams.has('event') || currentParams.get('event') !== eventId;
+        currentParams.set('event', eventId);
+        const newUrl = `${currentUrl.pathname}?${currentParams.toString()}`;
+
+        if (isNewEvent) {
+            history.pushState({}, '', newUrl); // New event, push to history
+        } else {
+            history.replaceState({}, '', newUrl); // Existing event, replace current state
+        }
     })
     .catch(error => {
         console.error('Error fetching data:', error);
         alert('An error occurred: ' + error.message);
     });
 }
+//Handle browser history
+window.addEventListener('popstate', (event) => {
+    const currentUrl = new URL(window.location.href);
+    const eventId = currentUrl.searchParams.get('event');
+    if(eventId){
+        fetchEventInfo(eventId);
+    }
+});
 
 //Create Event Form
 //Resize text area

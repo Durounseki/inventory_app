@@ -51,7 +51,9 @@ footer{
 
 /* Events page */
 .event-dashboard{
-    display: flex;
+    /* display: flex; */
+    display: grid;
+    grid-template-columns: 1fr 2fr;
     gap: 48px;
     padding: 24px 48px 24px 16px;
     width: 100%;
@@ -77,6 +79,7 @@ footer{
 
 .event-container{
     display: flex;
+    flex: 1;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -206,8 +209,8 @@ footer{
     box-sizing: border-box;
     display: flex;
     gap: 8px;
-    flex: 1;
     align-items: center;
+    flex: 1;
 }
 
 .search, .clear-search, .searchbar input{
@@ -245,6 +248,7 @@ footer{
     display: flex;
     gap: 16px;
     align-items: center;
+    flex-wrap: wrap;
     /* justify-content: space-between; */
 }
 

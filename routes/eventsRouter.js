@@ -7,8 +7,8 @@ eventsRouter.get("/", eventsController.getEvents);
 //Render create event
 eventsRouter.get("/create", eventsController.getCreateEvent);
 eventsRouter.post("/create", eventsController.postCreateEvent);
-//Search event by country
-eventsRouter.post("/country", eventsController.searchByCountry);
+//Search event
+eventsRouter.post("/search", eventsController.searchEvents);
 
 //Render featured event
 eventsRouter.get("/:id",eventsController.getEvent);

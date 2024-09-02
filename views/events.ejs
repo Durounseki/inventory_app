@@ -1,26 +1,39 @@
 <% extend('layout') %>
 <div class="event-dashboard">
     <div class="event-schedule">
-        <div class="schedule-header">
-            <div class="search-container">
-                <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
-                <div class="filter-container">
-                    <p class="filter">
-                        Filter by
-                    </p>
-                </div>
+        <form action="/events/search" method="POST" onsubmit="return handleSearchSubmit(event);" class="search-container">
+            <div class="searchbar">
+                    <%- include("./partials/searchbar.ejs", {value: country}) %>
             </div>
             <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
-        </div>
+            <%- include("./partials/filter.ejs", {selectValue: style, dateValue: date}) %>
+        </form>
+    
+        <h2>Dance Events</h2>
         <div class="event-cards">
-            <% for(event of events) { %>
-    
-                <%- include("./partials/event_card.ejs",{event: event}) %>
-    
+            <% if(locals.events){ %>
+                <% for(event of events) { %>
+        
+                    <%- include("./partials/event_card.ejs",{event: event}) %>
+        
+                <% } %>
+            <% }else{ %>
+                <p class="search-not-found">Sorry, there are no results that match <span>you search criteria</span>...</p>
             <% } %>
         </div>
     </div>
     <div class="event-container">
-        <%- include("./partials/event_info.ejs",{event: featuredEvent}) %>
+        <% if(locals.featuredEvent){ %>
+            <%- include("./partials/event_info.ejs",{event: featuredEvent}) %>
+        <% }else{ %>
+            <h1 class="no-match-title">No matching events</h1>
+            <p class="no-match-message">
+                Looks like we couldn't find any events that fit <span>those filters</span>.
+            </p>
+            <p class="no-match-cta">
+                Don't give up! You can <a href="/events/create" class="create-link">add your own event</a>
+                to the list or <a href="/events" class="back-to-events">see what else is happening</a> in the dance world.
+            </p>
+        <% } %>
     </div>
 </div>

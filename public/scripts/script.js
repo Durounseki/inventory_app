@@ -20,6 +20,13 @@ function showClearButton(event){
         button.classList.remove('show');
     }
 }
+//Select style option in search form
+const styleSelect = document.querySelector('#style-search');
+const styleValue = styleSelect.dataset.styleValue;
+const selectedStyle = styleSelect.querySelector(`option[value="${styleValue}"]`);
+if (selectedStyle) {
+    selectedStyle.selected = true;
+}
 
 //Display selected event
 const eventCards = document.querySelectorAll('.event-card');

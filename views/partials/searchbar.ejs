@@ -1,17 +1,3 @@
-<form action="/events/country" method="POST" onsubmit="return handleSearchSubmit(event);" class="searchbar">
-    <button type="submit" class="search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
-    <input type="text" name="country" placeholder="Search by country">
-    <button type="reset" class="clear-search"><i class="fa-solid fa-circle-xmark"></i></button>
-</form>
-<form class="search-filter">
-    <select name="dance-style" id="dance-style">
-        <option value="" disabled selected>Style</option>
-        <option value="salsa">Salsa</option>
-        <option value="bachata">Bachata</option>
-        <option value="kizomba">Kizomba</option>
-        <option value="zouk">Zouk</option>
-        <option value="other">Other</option>
-    </select>
-    <label for="date">Date:</label>
-    <input type="month" id="date" name="date">
-</form>
+<div class="search" aria-label="Search"><i class="fa-solid fa-magnifying-glass"></i></div>
+<input type="text" name="country-search" id="country-search" placeholder="Search by country" value="<%= value %>">
+<button type="reset" class="clear-search"><i class="fa-solid fa-circle-xmark"></i></button>

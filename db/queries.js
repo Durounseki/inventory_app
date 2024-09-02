@@ -46,7 +46,7 @@ async function createNewEvent(eventInfo,flyer){
         }
     }
     const eventPicture = {
-        "src": flyer.path.replace('public',''),
+        "src": flyer.path.replace('public',''),//The storage directory is set to uploads inside the public directory, but our configuration parses the public directory to the root
         "alt": eventInfo["event-name"]
     };
     pool.query(
@@ -56,10 +56,13 @@ async function createNewEvent(eventInfo,flyer){
     console.log('Event added successfully!');
 }
 
-async function searchByCountry(country){
+async function searchEvent(country,style,date){
     const { rows } = await pool.query(
-        "SELECT * FROM events WHERE country ILIKE $1 ORDER BY date ASC",
-        [`%${country}%`]
+        `SELECT * FROM events WHERE
+        ($1 = '' OR country ILIKE $1)
+        AND ($2 = '' OR to_char(date, 'YYYY-MM') ILIKE $2)
+        ORDER BY date ASC`,
+        [`%${country}%`,date]
     );
     return rows;
 }
@@ -68,5 +71,5 @@ module.exports = {
     getAllEvents,
     getEvent,
     createNewEvent,
-    searchByCountry
+    searchEvent
 };

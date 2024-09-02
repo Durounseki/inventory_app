@@ -1,0 +1,18 @@
+<div class="filter-container">
+    <p>Filter by</p>
+    <div class="search-filter">
+        <select name="style-search" id="style-search" data-style-value="<%= selectValue %>">
+            <option value="" selected>Style</option>
+            <option value="salsa">Salsa</option>
+            <option value="bachata">Bachata</option>
+            <option value="kizomba">Kizomba</option>
+            <option value="zouk">Zouk</option>
+            <option value="other">Other</option>
+        </select>
+        <div class="date-filter">
+            <label for="date">Date:</label>
+            <input type="month" id="date-search" name="date-search" value="<%= dateValue %>">
+        </div>
+        <button type="submit" class="submit-search">Filter</button>
+    </div>
+</div>

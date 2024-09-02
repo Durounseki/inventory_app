@@ -22,14 +22,19 @@ const ejs = require('ejs');
 //Create event views
 
 async function getEvents(req, res){
-    //Handle country filtering
+    //Handle queries
     const country = req.query.country;
+    const style =  req.query.style;
+    const date = req.query.date;
     //Handle selected event
     const eventId = req.query.event;
     let events;
     let selectedEvent;
-    if(country){
-        events = await db.searchByCountry(country);
+    if(country || style || date){
+        events = await db.searchEvent(country,style,date);
+        if(events.length === 0){
+            return res.render("events",{title: "Events",country: country, style: style, date: date});
+        }
         if(eventId){
             selectedEvent = await db.getEvent(eventId);
         }else{
@@ -45,7 +50,7 @@ async function getEvents(req, res){
         }
     }
     
-    res.render("events",{title: "Events", events: events, featuredEvent: selectedEvent});
+    res.render("events",{title: "Events", events: events, country: country, style: style, date: date, featuredEvent: selectedEvent});
 };
 
 async function getEvent(req, res){
@@ -78,10 +83,18 @@ const postCreateEvent = [
 //Search event
 async function searchByCountry(req, res){
     const country = req.body.country;
-    // const foundEvents = await db.searchByCountry(country);
     const newUrl = `/events?country=${encodeURIComponent(country)}`;
     res.redirect(newUrl);
-    // res.render("events",{title: "Events", events: foundEvents, featuredEvent: foundEvents[0]});
+}
+
+//Filter event
+async function searchEvents(req, res){
+    const country = encodeURIComponent(req.body['country-search']);
+    const date = encodeURIComponent(req.body['date-search']);
+    console.log(date);
+    const style = encodeURIComponent(req.body['style-search']);
+    const newUrl = `/events?country=${country}&style=${style}&date=${date}`;
+    res.redirect(302,newUrl);
 }
 
 //Edit event
@@ -93,5 +106,6 @@ module.exports = {
     getEvent,
     getCreateEvent,
     postCreateEvent,
-    searchByCountry
+    searchByCountry,
+    searchEvents
 }

@@ -4,6 +4,9 @@ This project is part of [__The Dance Thread__](https://thedancethread.com/), an 
 
 ## To Do List
 
+* [ ] Enable event filtering
+* [ ] Change url after search and attach country name
+* [ ] Handle not found dance event
 * [ ] Add Home page
 * [ ] Add About page
 * [ ] Add contact page

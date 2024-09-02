@@ -1,14 +1,16 @@
 <% extend('layout') %>
 <div class="event-dashboard">
     <div class="event-schedule">
-        <div class="search-container">
-            <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
+        <div class="schedule-header">
+            <div class="search-container">
+                <%- include("./partials/searchbar.ejs",{url: "/events"}) %>
+                <div class="filter-container">
+                    <p class="filter">
+                        Filter by
+                    </p>
+                </div>
+            </div>
             <a href="/events/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
-        </div>
-        <div class="filter-container">
-            <p class="filter">
-                Filter by
-            </p>
         </div>
         <div class="event-cards">
             <% for(event of events) { %>

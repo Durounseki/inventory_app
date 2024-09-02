@@ -22,14 +22,27 @@ const ejs = require('ejs');
 //Create event views
 
 async function getEvents(req, res){
-    const events = await db.getAllEvents();
+    //Handle country filtering
+    const country = req.query.country;
+    //Handle selected event
     const eventId = req.query.event;
+    let events;
     let selectedEvent;
-    if(eventId){
-        selectedEvent = await db.getEvent(eventId);
+    if(country){
+        events = await db.searchByCountry(country);
+        if(eventId){
+            selectedEvent = await db.getEvent(eventId);
+        }else{
+            //For the moment let's render the earliest coming event the first time the page is load
+            return res.redirect(302,req.originalUrl+`&event=${events[0].id}`);
+        }
     }else{
-        //For the moment let's render the earliest coming event the first time the page is load
-        return res.redirect(302,`/events?event=${events[0].id}`);
+        events = await db.getAllEvents();
+        if(eventId){
+            selectedEvent = await db.getEvent(eventId);
+        }else{
+            return res.redirect(302,req.originalUrl+`?event=${events[0].id}`);
+        }
     }
     
     res.render("events",{title: "Events", events: events, featuredEvent: selectedEvent});
@@ -65,8 +78,10 @@ const postCreateEvent = [
 //Search event
 async function searchByCountry(req, res){
     const country = req.body.country;
-    const foundEvents = await db.searchByCountry(country);
-    res.render("events",{title: "Events", events: foundEvents, featuredEvent: foundEvents[0]});
+    // const foundEvents = await db.searchByCountry(country);
+    const newUrl = `/events?country=${encodeURIComponent(country)}`;
+    res.redirect(newUrl);
+    // res.render("events",{title: "Events", events: foundEvents, featuredEvent: foundEvents[0]});
 }
 
 //Edit event

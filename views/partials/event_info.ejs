@@ -18,11 +18,11 @@
         <i class="fa-regular fa-calendar"></i><%= dayjs(event.date).format('YYYY MMMM D') %>
     </p>
     <p class="venue">
-        <i class="fa-regular fa-map"></i><% if(event.venue.url){ %><a href="<%= event.venue.url %>"><%= event.venue.name %></a><% } else {%><%= event.venue.name %><% } %>
+        <i class="fa-regular fa-map"></i><% if(event.venue.url){ %><a href="<%= event.venue.url %>" rel="noopener noreferrer" target="_blank"><%= event.venue.name %></a><% } else {%><%= event.venue.name %><% } %>
     </p>
     <p class="sns">
         <% for(sns of event.sns) { %>
-            <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
+            <a href="<%= sns.url %>" aria-label="<%= sns.name %>" rel="noopener noreferrer" target="_blank"><i class="<%= sns.faClass %>"></i></a>
         <% } %>
     </p>
 </div>

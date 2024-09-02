@@ -61,8 +61,9 @@ async function searchEvent(country,style,date){
         `SELECT * FROM events WHERE
         ($1 = '' OR country ILIKE $1)
         AND ($2 = '' OR to_char(date, 'YYYY-MM') ILIKE $2)
+        AND ($3 = '' OR $3 = ANY(style))
         ORDER BY date ASC`,
-        [`%${country}%`,date]
+        [`%${country}%`,date,style.charAt(0).toUpperCase() + style.slice(1)]
     );
     return rows;
 }

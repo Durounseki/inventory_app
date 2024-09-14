@@ -33,7 +33,7 @@ async function getEvents(req, res){
     if(country || style || date){
         events = await db.searchEvent(country,style,date);
         if(events.length === 0){
-            return res.render("events",{title: "Events",country: country, style: style, date: date});
+            return res.render("events",{title: "Events", script: "events.js", country: country, style: style, date: date});
         }
         if(eventId){
             selectedEvent = await db.getEvent(eventId);
@@ -50,7 +50,7 @@ async function getEvents(req, res){
         }
     }
     
-    res.render("events",{title: "Events", events: events, country: country, style: style, date: date, featuredEvent: selectedEvent});
+    res.render("events",{title: "Events", script: "events.js", events: events, country: country, style: style, date: date, featuredEvent: selectedEvent});
 };
 
 async function getEvent(req, res){
@@ -66,7 +66,7 @@ async function getEvent(req, res){
 };
 
 async function getCreateEvent(req, res){
-    res.render("create-event",{title: "Create new event"});
+    res.render("create-event",{title: "Create new event", script: "create-event.js"});
 }
 
 //Create new event

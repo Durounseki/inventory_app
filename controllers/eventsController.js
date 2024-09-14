@@ -5,17 +5,17 @@ const dayjs = require('dayjs');
 //Form validation
 const { body, validationResult } = require("express-validator");
 //Handle file uploads
-// const multer = require('multer');
-// //Set up storage
-// const storage = multer.diskStorage({
-//     destination: (req,file,cb) =>{
-//         cb(null,'public/uploads/');
-//     },
-//     filename: (req, file, cb) => {
-//         cb(null, Date.now() + '-' + file.originalname);
-//     }
-// });
-// const upload = multer({storage: storage});
+const multer = require('multer');
+//Set up storage
+const storage = multer.diskStorage({
+    destination: (req,file,cb) =>{
+        cb(null,'public/uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+const upload = multer({storage: storage});
 //EJS engine
 const ejs = require('ejs');
 
@@ -68,55 +68,15 @@ async function getEvent(req, res){
 async function getCreateEvent(req, res){
     res.render("create-event",{title: "Create new event", script: "create-event.js"});
 }
-//Define validators
-const validateEvent = [
-    //Check event name
-    body("event-name").trim().notEmpty().withMessage('Please enter the event name')
-    .isLength({max: 100}).withMessage('max 100 characters'),
-    //Check country
-    body("event-venue-country").trim().notEmpty().withMessage('Please enter the country where the event will be held')
-    .isLength({max: 30}).withMessage('max 30 characters'),
-    //Check city
-    body("event-venue-city").trim().notEmpty().withMessage('Please enter the city where the event will be held')
-    .isLength({max: 30}).withMessage('max 30 characters'),
-    //Check venue
-    body("event-venue-name").trim().notEmpty().withMessage('Please enter the venue name')
-    .isLength({min: 1, max: 50}).withMessage('max 50 characters'),
-    //Check location
-    body("event-venue-url").trim().isURL().withMessage('Please enter a valid URL'),
-    //Check date
-    body("event-date").notEmpty().withMessage('Please enter when the event starts'),
-    //Check sns. We use a custom validator since the number of fields event-sns-*-url is variable
-    body("*").custom((value,{req,location,path}) => {
-        if (path.match(/^event-sns-\d+-url$/)){
-            try{
-                const url = new URL(value);
-                return true
-            }catch{
-                throw new Error('Please enter a valid URL')
-            }
-        }
-        return true
-    })
-
-]
 
 //Create new event
 const postCreateEvent = [
-    validateEvent,
-    // upload.single('event-flyer'),
+    upload.single('event-flyer'),
     async (req, res) => {
-        
         const eventInfo = req.body;
-        const errors = validationResult(req);
-        
-        if(!errors.isEmpty()){
-            return res.status(400).json({info: eventInfo, errors: errors});
-        }
-        res.send("No errors");
-        // const flyer = req.file;
-        // await db.createNewEvent(eventInfo,flyer);
-        // res.redirect("create");
+        const flyer = req.file;
+        await db.createNewEvent(eventInfo,flyer);
+        res.redirect("create");
     }
 ];
 

@@ -1,13 +1,23 @@
-const pool = require("./pool");
+// const pool = require("./pool");
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient();
 
 async function getAllEvents() {
-    const { rows } = await pool.query("SELECT * FROM events ORDER BY date ASC");
-    return rows;
+    const events = await prisma.danceEvent.findMany({
+        orderBy: {date: 'asc'}
+    });
+    console.log(events);
+    return events;
 };
 
 async function getEvent(eventId){
-    const { rows } = await pool.query(`SELECT * FROM events WHERE id = ${eventId}`);
-    return rows[0];
+    const event = await prisma.danceEvent.findUnique({
+        where: {
+            id: eventId
+        }
+    });
+
+    return event;
 }
 
 const snsFaClass = {
@@ -18,20 +28,7 @@ const snsFaClass = {
 };
 
 async function createNewEvent(eventInfo,flyer){
-    console.log(eventInfo);
-    const eventName = eventInfo["event-name"];
-    const eventDate = eventInfo["event-date"];
-    const eventCountry = eventInfo["event-venue-country"];
-    const eventCity = eventInfo["event-venue-city"];
-    const eventVenue = {
-        "name": eventInfo["event-venue-name"],
-        "url": eventInfo["event-venue-url"]
-    };
-    const eventDescription = {
-        "headline": eventInfo["event-headline"],
-        "body": eventInfo["event-body"],
-        "cta": eventInfo["event-cta"]
-    };
+
     const eventSns = [];
     for (const [key, value] of Object.entries(eventInfo)) {
         if (key.startsWith('event-sns') && key.endsWith('platform')) {
@@ -45,27 +42,59 @@ async function createNewEvent(eventInfo,flyer){
             });
         }
     }
-    const eventPicture = {
-        "src": flyer.path.replace('public',''),//The storage directory is set to uploads inside the public directory, but our configuration parses the public directory to the root
-        "alt": eventInfo["event-name"]
-    };
-    pool.query(
-        'INSERT INTO events (name, date, country, city, venue, description, sns, flyer) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-        [eventName, eventDate, eventCountry, eventCity, eventVenue, eventDescription, eventSns, eventPicture]
-    );
+
+    await prisma.danceEvent.create({
+        data: {
+            name: eventInfo["event-name"],
+            date: new Date(eventInfo["event-date"]),
+            country: eventInfo["event-venue-country"],
+            city: eventInfo["event-venue-city"],
+            venue: [{
+                name: eventInfo["event-venue-name"],
+                url: eventInfo["event-venue-url"]
+            }],
+            description: {
+                headline: eventInfo["event-headline"],
+                body: eventInfo["event-body"],
+                cta: eventInfo["event-cta"]
+            },
+            sns: eventSns,
+            flyer: {
+                src: flyer.path.replace('public', ''),//The storage directory is set to uploads inside the public directory, but our configuration parses the public directory to the root
+                alt: eventInfo["event-name"]
+            },
+            style: "Bachata"
+        }
+    })
+    console.log(eventInfo);
+    
     console.log('Event added successfully!');
 }
 
 async function searchEvent(country,style,date){
-    const { rows } = await pool.query(
-        `SELECT * FROM events WHERE
-        ($1 = '' OR country ILIKE $1)
-        AND ($2 = '' OR to_char(date, 'YYYY-MM') ILIKE $2)
-        AND ($3 = '' OR $3 = ANY(style))
-        ORDER BY date ASC`,
-        [`%${country}%`,date,style.charAt(0).toUpperCase() + style.slice(1)]
-    );
-    return rows;
+    const dateObj = new Date(date);
+    const newDateObj = new Date(date);
+    
+    newDateObj.setMonth(newDateObj.getMonth() + 1)//One month later
+    const events = await prisma.danceEvent.findMany({
+        where: {
+            country: country === '' ? undefined : {
+                contains: country,
+                mode: 'insensitive'
+            },
+            date: date === '' ? undefined : { 
+                gte: dateObj, 
+                lt: newDateObj
+            },
+            style: style === '' ? undefined : {
+                path: ['style'],
+                equals: style.charAt(0).toUpperCase() + style.slice(1)
+            },
+        },
+        orderBy: {date: 'asc'}
+    });
+
+    return events;
 }
 
 module.exports = {

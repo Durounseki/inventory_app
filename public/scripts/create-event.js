@@ -26,7 +26,7 @@ function addSnsInputGroup() {
 
     const platformSelect = document.createElement('select');
     platformSelect.name = `event-sns-${snsCounter}-platform`; 
-    platformSelect.required = true;
+    // platformSelect.required = true;
 
     const platforms = ['website', 'facebook', 'instagram', 'youtube'];
     platforms.forEach(platform => {
@@ -39,7 +39,7 @@ function addSnsInputGroup() {
     urlInput.type = 'text';
     urlInput.name = `event-sns-${snsCounter}-url`; 
     urlInput.placeholder = 'Enter URL';
-    urlInput.required = true;
+    // urlInput.required = true;
 
     const removeButton = document.createElement('button');
     removeButton.type = 'button';

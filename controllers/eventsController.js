@@ -22,8 +22,6 @@ const ejs = require('ejs');
 //Create event views
 
 async function getEvents(req, res){
-    // //Get all events from db
-    // const events = await db.getAllEvents();
     //Handle queries
     const country = req.query.country;
     const style =  req.query.style;

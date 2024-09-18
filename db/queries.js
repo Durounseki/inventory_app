@@ -79,7 +79,7 @@ async function searchEvent(country,style,date){
     const events = await prisma.danceEvent.findMany({
         where: {
             country: country === '' ? undefined : {
-                contains: country,
+                equals: country,
                 mode: 'insensitive'
             },
             date: date === '' ? undefined : { 
@@ -87,8 +87,7 @@ async function searchEvent(country,style,date){
                 lt: newDateObj
             },
             style: style === '' ? undefined : {
-                path: ['style'],
-                equals: style.charAt(0).toUpperCase() + style.slice(1)
+                has: style.charAt(0).toUpperCase() + style.slice(1)
             },
         },
         orderBy: {date: 'asc'}

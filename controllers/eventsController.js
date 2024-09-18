@@ -1,3 +1,4 @@
+require("dotenv").config();
 //Database
 const db = require('../db/queries');
 //Dates
@@ -7,15 +8,24 @@ const { body, validationResult } = require("express-validator");
 //Handle file uploads
 const multer = require('multer');
 //Set up storage
-const storage = multer.diskStorage({
-    destination: (req,file,cb) =>{
-        cb(null,'public/uploads/');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + '-' + file.originalname);
-    }
-});
+const storage = multer.memoryStorage()
+//Configure cloud storage
 const upload = multer({storage: storage});
+const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
+
+const bucketName = process.env.BUCKET_NAME
+const bucketRegion = process.env.BUCKET_REGION
+const accessKey = process.env.ACCESS_KEY
+const secretAccessKey = process.env.SECRET_ACCESS_KEY
+
+const s3 = new S3Client({
+    credentials: {
+        accessKeyId: accessKey,
+        secretAccessKey: secretAccessKey
+    },
+    region: bucketRegion
+})
+
 //EJS engine
 const ejs = require('ejs');
 
@@ -83,7 +93,22 @@ const postCreateEvent = [
     async (req, res) => {
         const eventInfo = req.body;
         const flyer = req.file;
-        await db.createNewEvent(eventInfo,flyer);
+        const params = {
+            Bucket: bucketName,
+            Key: flyer.originalname,
+            Body: flyer.buffer,
+            ContentType: flyer.mimetype,
+        }
+        const command = new PutObjectCommand(params);
+        try{
+            await s3.send(command);
+            console.log('File uploaded');
+        }
+        catch(err){
+            console.error(err)
+        }
+        
+        // await db.createNewEvent(eventInfo,flyer);
         res.redirect("create");
     }
 ];

@@ -6,7 +6,6 @@ async function getAllEvents() {
     const events = await prisma.danceEvent.findMany({
         orderBy: {date: 'asc'}
     });
-    console.log(events);
     return events;
 };
 
@@ -76,7 +75,6 @@ async function createNewEvent(eventInfo,flyer){
             style: eventStyles
         }
     })
-    console.log(eventInfo);
     
     console.log('Event added successfully!');
 }

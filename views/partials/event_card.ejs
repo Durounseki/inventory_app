@@ -11,7 +11,7 @@
             <%= event.name%>
         </p>
         <p class="event-venue">
-            <i class="fa-regular fa-map"></i><%= event.country %>
+            <% if(event.venue[0].url){ %><a href="<%= event.venue[0].url %>" rel="noopener noreferrer" target="_blank"><i class="fa-regular fa-map"></i><%= event.country %></a><% } else {%><i class="fa-regular fa-map"></i><%= event.country %><% } %>
         </p>
         <p class="event-sns">
             <% for(sns of event.sns) { %>

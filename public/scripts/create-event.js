@@ -19,6 +19,7 @@ function addSnsInputGroup() {
     snsCounter++;
     if(snsCounter === 4){
         snsCounter=4;
+        addSnsButton.classList.add('disabled');
         addSnsButton.removeEventListener('click',addSnsInputGroup);
     }
     const snsGroup = document.createElement('div');
@@ -39,15 +40,29 @@ function addSnsInputGroup() {
     urlInput.type = 'text';
     urlInput.name = `event-sns-${snsCounter}-url`; 
     urlInput.placeholder = 'Enter URL';
-    // urlInput.required = true;
-
+    urlInput.required = true;
+    if(snsCounter > 1){
+        const removeButton = document.querySelector('.remove-sns');
+        removeButton.classList.remove('disabled');
+    }
     const removeButton = document.createElement('button');
     removeButton.type = 'button';
     removeButton.textContent = 'Remove';
+    removeButton.classList.add('remove-sns');
+    if(snsCounter === 1){
+        removeButton.classList.add('disabled');
+    }
     removeButton.addEventListener('click', () => {
-        snsGroup.remove();
-        snsCounter--;
+        if(snsCounter > 1){
+            snsGroup.remove();
+            snsCounter--;
+            if(snsCounter===1){
+                const disabledButton = document.querySelector('.remove-sns');
+                disabledButton.classList.add('disabled');
+            }
+        }
         if(snsCounter === 3){
+            addSnsButton.classList.remove('disabled');
             addSnsButton.addEventListener('click',addSnsInputGroup);        
         }
     });

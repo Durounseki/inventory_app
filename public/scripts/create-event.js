@@ -26,7 +26,8 @@ function addSnsInputGroup() {
     snsGroup.classList.add('event-sns-group');
 
     const platformSelect = document.createElement('select');
-    platformSelect.name = `event-sns-${snsCounter}-platform`; 
+    // platformSelect.name = `event-sns-${snsCounter}-platform`;
+    platformSelect.name = `event-sns-platform`;
     // platformSelect.required = true;
 
     const platforms = ['website', 'facebook', 'instagram', 'youtube'];
@@ -38,7 +39,8 @@ function addSnsInputGroup() {
     });
     const urlInput = document.createElement('input');
     urlInput.type = 'text';
-    urlInput.name = `event-sns-${snsCounter}-url`; 
+    // urlInput.name = `event-sns-${snsCounter}-url`; 
+    urlInput.name = `event-sns-url`;
     urlInput.placeholder = 'Enter URL';
     urlInput.required = true;
     if(snsCounter > 1){

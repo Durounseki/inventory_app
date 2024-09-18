@@ -29,18 +29,28 @@ const snsFaClass = {
 
 async function createNewEvent(eventInfo,flyer){
 
-    const eventSns = [];
-    for (const [key, value] of Object.entries(eventInfo)) {
-        if (key.startsWith('event-sns') && key.endsWith('platform')) {
-            const index = key.match(/\d+/)[0]; // Extract the number from the key
-            const urlKey = `event-sns-${index}-url`;
-
-            eventSns.push({
-                name: value.toLowerCase(),
-                url: eventInfo[urlKey],
-                faClass: snsFaClass[value.toLowerCase()]
-            });
-        }
+    let snsPlatforms;
+    let snsUrls;
+    if(Array.isArray(eventInfo['event-sns-platform'])){
+        snsPlatforms = eventInfo['event-sns-platform'];
+        snsUrls = eventInfo['event-sns-url'];
+    }else{
+        snsPlatforms = [eventInfo['event-sns-platform']];
+        snsUrls = [eventInfo['event-sns-url']];
+    };
+    let eventSns = [];
+    snsPlatforms.forEach((platform,index) => {
+        eventSns.push({
+            name: platform,
+            url: snsUrls[index],
+            faClass: snsFaClass[platform]
+        })
+    })
+    let eventStyles;
+    if(Array.isArray(eventInfo['event-style'])){
+        eventStyles = eventInfo['event-style'];
+    }else{
+        eventStyles = [eventInfo['event-style']];
     }
 
     await prisma.danceEvent.create({
@@ -63,7 +73,7 @@ async function createNewEvent(eventInfo,flyer){
                 src: flyer.path.replace('public', ''),//The storage directory is set to uploads inside the public directory, but our configuration parses the public directory to the root
                 alt: eventInfo["event-name"]
             },
-            style: "Bachata"
+            style: eventStyles
         }
     })
     console.log(eventInfo);

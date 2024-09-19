@@ -138,37 +138,6 @@ const validateEvent = [
     })
 ]
 
-//Resize and convert
-async function resizeAndConvertJPEG(inputImage,maxWidth,maxHeight,format,quality=100){
-    try{
-        const image = sharp(inputImage);
-        let resizedImage;
-        let outputImage;
-        const metadata = await sharp(inputImage).metadata();
-        //Check if image is smaller than max resolution
-        if(metadata.width >= maxWidth && metadata.height >= maxHeight) {
-            resizedImage = sharp(await image.resize(maxWidth,maxHeight,{
-                fit: 'inside',
-                quality: quality,
-                withoutEnlargement: true
-            }).toBuffer());
-        }else{
-            resizedImage = image;
-        }
-        //Avoid quality loss when the original file is jpeg
-        if(metadata.format !== format){
-            outputImage = await resizedImage.toFormat(format,{quality: quality}).toBuffer();
-        }else{
-            outputImage = await resizedImage.toBuffer();
-        }
-        console.log('Image processed successfully!');
-        return outputImage;
-    }catch(error){
-        console.error('Error processing image: ',error);
-        return undefined;
-    }
-}
-
 //Create new event
 const postCreateEvent = [
     upload.single('event-flyer'),
@@ -204,30 +173,12 @@ const postCreateEvent = [
             return res.status(400).json({info: eventInfo, errors: errors.errors});
         }
         
-        // const imageName = randomImageName();
-        // const params = {
-        //     Bucket: bucketName,
-        //     Key: imageName,
-        //     Body: flyer.buffer,
-        //     ContentType: flyer.mimetype,
-        // }
-        // const command = new PutObjectCommand(params);
-        // try{
-        //     await s3.send(command);
-        //     console.log('File uploaded');
-        // }
-        // catch(err){
-        //     console.error(err)
-        // }
-
-        //Resize image
-        // const outputImage = await resizeAndConvertJPEG(flyer.buffer, 1024, 1024, 'webp',100);
         const imageName = randomImageName();
         const params = {
             Bucket: bucketName,
             Key: imageName,
             Body: flyer.buffer,
-            ContentType: 'webp',
+            ContentType: flyer.mimetype,
         }
         const command = new PutObjectCommand(params);
         try{
@@ -238,22 +189,7 @@ const postCreateEvent = [
             console.error(err)
         }
         
-        // try{
-        //     const base64Image = flyer.buffer.toString('base64');
-        //     const imageUrl = `data:image/jpeg;base64,${base64Image}`;
-        //     const base64ProcessedImage = outputImage.toString('base64');
-        //     const processedImageUrl = `data:image/jpeg;base64,${base64ProcessedImage}`;
-        //     res.send(`
-        //     <div style="display: flex">
-        //         <img src="${imageUrl}" style="max-width: 600; max-height: 600px">
-        //         <img src="${processedImageUrl}">
-        //     <div/>
-        //     `)
-        // }catch(error){
-        //     console.error("Error rendering image: ", error);
-        // }
-        
-        // await db.createNewEvent(eventInfo,imageName);
+        await db.createNewEvent(eventInfo,imageName);
         res.redirect("create");
     }
 ];

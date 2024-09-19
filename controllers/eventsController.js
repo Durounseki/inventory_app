@@ -28,21 +28,21 @@ const s3 = new S3Client({
 //Encrypt file name
 const crypto = require('crypto');
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-//Configure server to download image
-const {getSignedUrl} = require('@aws-sdk/s3-request-presigner');
+//Configure server to download image using cdn CloudFront
+const { getSignedUrl } = require('@aws-sdk/cloudfront-signer');
 
 //EJS engine
 const ejs = require('ejs');
 
 //fetch images
 async function getImageUrl(event){
-    const getObjectParams = {
-        Bucket: bucketName,
-        Key: event.flyer.src
-    }
-    const command = new GetObjectCommand(getObjectParams);
-    const url = await getSignedUrl(s3, command, { expiresIn: 3600 });
-    event.flyer.src = url;
+    const url = await getSignedUrl({
+        url: "https://drzqbwsxiz2uk.cloudfront.net/"+event.flyer.src,
+        dateLessThan: new Date(Date.now() + 1000*60*60*24),
+        privateKey: process.env.CLOUDFRONT_PRIVATE_KEY,
+        keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID
+    })
+    event.flyer.src = url
 }
 //Create event views
 
@@ -58,7 +58,6 @@ async function getEvents(req, res){
     if(country || style || date){
         events = await db.searchEvent(country,style,date);
         events.forEach(async (event) => await getImageUrl(event));
-        console.log('events with filter:' , events);
         if(events.length === 0){
             //If no events are found, there is no featured event, in this case show not found message
             return res.render("events",{title: "Events", script: "events.js", country: country, style: style, date: date});
@@ -66,7 +65,6 @@ async function getEvents(req, res){
         if(eventId){
             selectedEvent = await db.getEvent(eventId);
             await getImageUrl(selectedEvent);
-            console.log('event with filter: ',selectedEvent)
         }else{
             //For the moment let's render the earliest coming event the first time the page is load
             return res.redirect(302,req.originalUrl+`&event=${events[0].id}`);
@@ -74,11 +72,9 @@ async function getEvents(req, res){
     }else{
         events = await db.getAllEvents();
         events.forEach(async (event) => await getImageUrl(event));
-        console.log('events no filter: ', events);
         if(eventId){
             selectedEvent = await db.getEvent(eventId);
             await getImageUrl(selectedEvent);
-            console.log('event no filter: ',selectedEvent)
         }else{
             return res.redirect(302,req.originalUrl+`?event=${events[0].id}`);
         }
@@ -90,7 +86,6 @@ async function getEvents(req, res){
 async function getEvent(req, res){
     const selectedEvent = await db.getEvent(req.params.id);
     await getImageUrl(selectedEvent);
-    // res.json(event);
     ejs.renderFile(process.cwd() + '/views/partials/event_info.ejs',{event: selectedEvent, dayjs: dayjs},{},(err, eventInfoHTML) => {
         if(err) {
             console.error('Error rendering template:', err);
@@ -132,9 +127,8 @@ const postCreateEvent = [
         catch(err){
             console.error(err)
         }
-
         
-        // await db.createNewEvent(eventInfo,imageName);
+        await db.createNewEvent(eventInfo,imageName);
         res.redirect("create");
     }
 ];

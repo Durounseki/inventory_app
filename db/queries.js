@@ -26,7 +26,7 @@ const snsFaClass = {
     "youtube": "fa-brands fa-youtube" 
 };
 
-async function createNewEvent(eventInfo,flyer){
+async function createNewEvent(eventInfo,imageName){
 
     let snsPlatforms;
     let snsUrls;
@@ -69,7 +69,7 @@ async function createNewEvent(eventInfo,flyer){
             },
             sns: eventSns,
             flyer: {
-                src: flyer.path.replace('public', ''),//The storage directory is set to uploads inside the public directory, but our configuration parses the public directory to the root
+                src: imageName, //Use image name to fetch the file from s3
                 alt: eventInfo["event-name"]
             },
             style: eventStyles

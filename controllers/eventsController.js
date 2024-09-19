@@ -7,6 +7,8 @@ const dayjs = require('dayjs');
 const { body, validationResult } = require("express-validator");
 //Handle file uploads
 const multer = require('multer');
+//Resize and convert images
+const sharp = require('sharp');
 //Set up storage
 const storage = multer.memoryStorage()
 //Configure cloud storage
@@ -125,8 +127,7 @@ const validateEvent = [
     //Check date
     body("event-date").notEmpty().withMessage('Please enter when the event starts'),
     //Check sns. We use a custom validator since the number of fields event-sns-*-url is variable
-    body("event-sns-url.*").custom((value,{req,location,path}) => {
-        console.log(new URL(value))
+    body("event-sns-url").custom((value,{req,location,path}) => {
         try{
             const url = new URL(value);
             return true
@@ -136,6 +137,38 @@ const validateEvent = [
         return true
     })
 ]
+
+//Resize and convert
+async function resizeAndConvertJPEG(inputImage,maxWidth,maxHeight,format,quality=100){
+    try{
+        const image = sharp(inputImage);
+        let resizedImage;
+        let outputImage;
+        const metadata = await sharp(inputImage).metadata();
+        //Check if image is smaller than max resolution
+        if(metadata.width >= maxWidth && metadata.height >= maxHeight) {
+            resizedImage = sharp(await image.resize(maxWidth,maxHeight,{
+                fit: 'inside',
+                quality: quality,
+                withoutEnlargement: true
+            }).toBuffer());
+        }else{
+            resizedImage = image;
+        }
+        //Avoid quality loss when the original file is jpeg
+        if(metadata.format !== format){
+            outputImage = await resizedImage.toFormat(format,{quality: quality}).toBuffer();
+        }else{
+            outputImage = await resizedImage.toBuffer();
+        }
+        console.log('Image processed successfully!');
+        return outputImage;
+    }catch(error){
+        console.error('Error processing image: ',error);
+        return undefined;
+    }
+}
+
 //Create new event
 const postCreateEvent = [
     upload.single('event-flyer'),
@@ -153,19 +186,23 @@ const postCreateEvent = [
                 value: ''
             });
         }else if(!flyer.mimetype.startsWith('image/')){
-            errors.erros.push({
+            errors.errors.push({
                 location: 'body',
                 msg: 'Invalid file type. Please upload an image.',
                 param: 'event-flyer',
                 value: flyer.mimetype
             });
+        }else if(flyer.size > 5*1024*1024){//Limit image size to 1MB
+            errors.errors.push({
+                location: 'body',
+                msg: 'File size exceeds 5MB limit',
+                param: 'event-flyer',
+                value: flyer.size
+            })
         }
         if(!errors.isEmpty()){
             return res.status(400).json({info: eventInfo, errors: errors.errors});
         }
-        console.log(errors.errors)
-        console.log(flyer)
-        console.log("No errors")
         
         // const imageName = randomImageName();
         // const params = {
@@ -181,6 +218,39 @@ const postCreateEvent = [
         // }
         // catch(err){
         //     console.error(err)
+        // }
+
+        //Resize image
+        // const outputImage = await resizeAndConvertJPEG(flyer.buffer, 1024, 1024, 'webp',100);
+        const imageName = randomImageName();
+        const params = {
+            Bucket: bucketName,
+            Key: imageName,
+            Body: flyer.buffer,
+            ContentType: 'webp',
+        }
+        const command = new PutObjectCommand(params);
+        try{
+            await s3.send(command);
+            console.log('File uploaded');
+        }
+        catch(err){
+            console.error(err)
+        }
+        
+        // try{
+        //     const base64Image = flyer.buffer.toString('base64');
+        //     const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        //     const base64ProcessedImage = outputImage.toString('base64');
+        //     const processedImageUrl = `data:image/jpeg;base64,${base64ProcessedImage}`;
+        //     res.send(`
+        //     <div style="display: flex">
+        //         <img src="${imageUrl}" style="max-width: 600; max-height: 600px">
+        //         <img src="${processedImageUrl}">
+        //     <div/>
+        //     `)
+        // }catch(error){
+        //     console.error("Error rendering image: ", error);
         // }
         
         // await db.createNewEvent(eventInfo,imageName);

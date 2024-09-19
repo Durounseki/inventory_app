@@ -106,29 +106,84 @@ const snsFaClass = {
     "instagram": "fa-brands fa-instagram",
     "youtube": "fa-brands fa-youtube" 
 };
+//Define validators
+const validateEvent = [
+    //Check event name
+    body("event-name").trim().notEmpty().withMessage('Please enter the event name')
+    .isLength({max: 100}).withMessage('max 100 characters'),
+    //Check country
+    body("event-venue-country").trim().notEmpty().withMessage('Please enter the country where the event will be held')
+    .isLength({max: 30}).withMessage('max 30 characters'),
+    //Check city
+    body("event-venue-city").trim().notEmpty().withMessage('Please enter the city where the event will be held')
+    .isLength({max: 30}).withMessage('max 30 characters'),
+    //Check venue
+    body("event-venue-name").trim().notEmpty().withMessage('Please enter the venue name')
+    .isLength({min: 1, max: 50}).withMessage('max 50 characters'),
+    //Check location
+    body("event-venue-url").optional({values: 'falsy'}).trim().isURL().withMessage('Please enter a valid URL'),
+    //Check date
+    body("event-date").notEmpty().withMessage('Please enter when the event starts'),
+    //Check sns. We use a custom validator since the number of fields event-sns-*-url is variable
+    body("event-sns-url.*").custom((value,{req,location,path}) => {
+        console.log(new URL(value))
+        try{
+            const url = new URL(value);
+            return true
+        }catch{
+            throw new Error('Please enter a valid URL')
+        }
+        return true
+    })
+]
 //Create new event
 const postCreateEvent = [
     upload.single('event-flyer'),
+    validateEvent,
     async (req, res) => {
         const eventInfo = req.body;
+        const errors = validationResult(req);
         const flyer = req.file;
-        const imageName = randomImageName();
-        const params = {
-            Bucket: bucketName,
-            Key: imageName,
-            Body: flyer.buffer,
-            ContentType: flyer.mimetype,
+        //Check for file errors
+        if(!flyer){
+            errors.errors.push({
+                location: 'body',
+                msg: 'No flyer uploaded',
+                param: 'event-flyer',
+                value: ''
+            });
+        }else if(!flyer.mimetype.startsWith('image/')){
+            errors.erros.push({
+                location: 'body',
+                msg: 'Invalid file type. Please upload an image.',
+                param: 'event-flyer',
+                value: flyer.mimetype
+            });
         }
-        const command = new PutObjectCommand(params);
-        try{
-            await s3.send(command);
-            console.log('File uploaded');
+        if(!errors.isEmpty()){
+            return res.status(400).json({info: eventInfo, errors: errors.errors});
         }
-        catch(err){
-            console.error(err)
-        }
+        console.log(errors.errors)
+        console.log(flyer)
+        console.log("No errors")
         
-        await db.createNewEvent(eventInfo,imageName);
+        // const imageName = randomImageName();
+        // const params = {
+        //     Bucket: bucketName,
+        //     Key: imageName,
+        //     Body: flyer.buffer,
+        //     ContentType: flyer.mimetype,
+        // }
+        // const command = new PutObjectCommand(params);
+        // try{
+        //     await s3.send(command);
+        //     console.log('File uploaded');
+        // }
+        // catch(err){
+        //     console.error(err)
+        // }
+        
+        // await db.createNewEvent(eventInfo,imageName);
         res.redirect("create");
     }
 ];

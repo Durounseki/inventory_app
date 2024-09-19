@@ -95,7 +95,7 @@ async function searchEvent(country,style,date){
                 lt: newDateObj
             },
             style: style === '' ? undefined : {
-                has: style.charAt(0).toUpperCase() + style.slice(1)
+                has: style
             },
         },
         orderBy: {date: 'asc'}

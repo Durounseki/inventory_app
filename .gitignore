@@ -3,3 +3,4 @@ node_modules
 aiven
 private_key.pem
 public_key.pem
+public/legal-policies

@@ -1,0 +1,18 @@
+<div class="user-card" data-user-id = "<%= user.id %>"></div>
+    <div class="user-thumb">
+        <img src="<%= user.headshot.src %>" alt=" <%= user.headshot.alt %>">
+    </div>
+    <div class="user-details">
+        <p class="user-name">
+            <%= user.name%>
+        </p>
+        <p class="user-country">
+            <i class="fa-regular fa-map"></i><%= user.country %>
+        </p>
+        <p class="user-sns">
+            <% for(sns of user.sns) { %>
+                <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
+            <% } %>
+        </p>
+    </div>
+</div>

@@ -47,8 +47,7 @@ const mainLogo = {
 const navLinks = [
     {href: "/", text: "Home" },
     {href: "/events", text: "Events"},
-    {href: "/artists", text: "Artists"},
-    {href: "/djs", text: "DJs"},
+    {href: "/community", text: "Community"},
     {href: "/about", text: "About" },
     {href: "/contact", text: "Contact"},
 ];
@@ -73,6 +72,8 @@ app.use( (req,res,next) => {
 app.use("/",indexRouter);
 //Events
 app.use("/events",eventsRouter);
+//Community
+app.use("/community",communityRouter);
 
 
 const PORT = process.env.PORT || 3000;

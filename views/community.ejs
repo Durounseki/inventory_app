@@ -1,0 +1,21 @@
+<% extend('layout')%>
+
+<div class="community-dashboard">
+    <form action="/community/search" method="POST" class="search-container">
+        <div class="searchbar">
+                <%- include("./partials/searchbar.ejs", {value: username}) %>
+        </div>
+        <a href="/community/create" class="create-button"><i class="fa-solid fa-plus"></i></a>
+        <%- include("./partials/community-filter.ejs", {selectValue: style, countryValue: country}) %>
+    </form>
+
+    <h2>Community</h2>
+    <div class="user-categories">
+        <%- include("./partials/user-category.ejs", { categoryName: "Dancers" }) %> 
+        <%- include("./partials/user-category.ejs", { categoryName: "Artists"}) %> 
+        <%- include("./partials/user-category.ejs", { categoryName: "DJ's"}) %> 
+        <%- include("./partials/user-category.ejs", { categoryName: "Instructors"}) %> 
+        <%- include("./partials/user-category.ejs", { categoryName: "Organizers"}) %> 
+        <%- include("./partials/user-category.ejs", { categoryName: "Media Crew"}) %> 
+    </div>
+</div>

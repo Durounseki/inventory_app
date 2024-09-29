@@ -4,9 +4,12 @@ const communityRouter = Router();
 
 //Render events page
 communityRouter.get("/", communityController.showDashboard);
-// //Render create event
-// communityRouter.get("/create", communityController.getCreateEvent);
-// communityRouter.post("/create", communityController.postCreateEvent);
+//Render login page
+communityRouter.get("/login", communityController.getLogin);
+
+//Render signup page
+communityRouter.get("/signup", communityController.getSignup);
+communityRouter.post("/signup", communityController.postSignup);
 // //Search event
 // communityRouter.post("/search", communityController.searchcommunity);
 

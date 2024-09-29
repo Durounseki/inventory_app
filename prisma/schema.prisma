@@ -19,3 +19,50 @@ model DanceEvent {
   sns         Json[]
   flyer       Json
 }
+
+model Users {
+  id             String         @id @default(uuid())
+  name           String
+  email          String         @unique
+  style          String[]
+  country        String?
+  bio            String?
+  sns            SNS[]
+  profilePic     Json?
+  role           Role[]         @default([DANCER])
+  signupProvider SignupProvider
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime?
+  lastLogin      DateTime?
+  verified       Boolean        @default(false)
+  preferences    Preferences?
+}
+
+model SNS {
+  id      String  @id @default(uuid())
+  name    String
+  faClass String
+  url     String
+  users   Users[]
+}
+
+model Preferences {
+  id                  String  @id @default(uuid())
+  userId              String  @unique
+  user                Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  showAssistingEvents Boolean @default(true)
+}
+
+enum Role {
+  DANCER
+  ARTIST
+  DJ
+  INSTRUCTOR
+  ORGANIZER
+  MEDIACREW
+}
+
+enum SignupProvider {
+  LOCAL
+  GOOGLE
+}

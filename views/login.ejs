@@ -1,0 +1,22 @@
+<% extend('layout') %>
+
+<div class="login-form-container">
+    <h2>Welcome back</h1>
+    <p>Log in to your account to continue.</p>
+    
+    <form action="/community/login" method="POST" class="login-form">
+        
+        <label for="user-email">Email:</label>
+        <input type="email" id="user-email" name="user-email" required>
+
+        <label for="user-password">Password:</label>
+        <input type="password" id="user-password" name="user-password" required>
+
+        <a href="/community/forgot-password">Forgot password</a>
+
+        <button type="submit" class="submit-user">Log in</button>
+
+    </form>
+    <p>Don't have an account? <a href="/community/signup">Sign up</a></p>
+    <p>By continuing, you agree to <span>The Dance Thread</span> <a href="/community/terms-of-service" rel="noopener noreferrer" target="_blank">terms of service</a> and <a href="/community/privacy-policy" rel="noopener noreferrer" target="_blank">privacy policy</a>.</p>
+</div>

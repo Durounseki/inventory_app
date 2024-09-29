@@ -1,0 +1,29 @@
+<% extend('layout') %>
+
+<div class="signup-form-container">
+    <h2>Welcome to <span>The Dance Thread</span></h1>
+    <p>Join our vibrant community and share your passion for dance.</p>
+    <p>Sign up to get started.</p>
+    
+    <form action="/community/signup" method="POST" class="signup-form">
+        <label for="user-name">Name:</label>
+        <input type="text" id="user-name" name="user-name" required placeholder="Enter your name, nickname, or stage name">
+        
+        <label for="user-email">Email:</label>
+        <input type="email" id="user-email" name="user-email" required>
+
+        <label for="user-password">Password:</label>
+        <input type="password" id="user-password" name="user-password" required>
+
+        <!-- HoneyPot -->
+        <input type="password" id="user-password-verify" name="user-password-verify" style="visibility: hidden; position: absolute;">
+ 
+        <label for="user-password-confirm">Confirm Password:</label>
+        <input type="password" id="user-password-confirm" name="user-password-confirm" required>
+
+        <button type="submit" class="submit-user">Sign up</button>
+
+    </form>
+    <p>Already have an account? <a href="/community/login">Log in</a></p>
+    <p>By continuing, you agree to <span>The Dance Thread</span> <a href="/community/terms-of-service" rel="noopener noreferrer" target="_blank">terms of service</a> and <a href="/community/privacy-policy" rel="noopener noreferrer" target="_blank">privacy policy</a>.</p>
+</div>

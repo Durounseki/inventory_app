@@ -10,6 +10,7 @@ const __dirname = import.meta.dirname;
 // Routers
 import indexRouter from "./routes/indexRouter.js"; // Assuming .js extension
 import eventsRouter from "./routes/eventsRouter.js"; 
+import communityRouter from "./routes/communityRouter.js"
 
 // Set the url encoder to handle form post request
 app.use(express.urlencoded({ extended: true }));

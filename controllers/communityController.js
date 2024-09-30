@@ -1,14 +1,17 @@
 //Data base
-const db = require('../db/queries');
+import * as db from '../db/communityQueries.js';
 //Form validation
-const { body, validationResult } = require("express-validator");
+import { body, validationResult } from "express-validator";
 //Password encryption
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt';
 const saltRounds = 10;
+
+import crypto from 'crypto';
+const randomImageSeed = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 
 
 //EJS engine
-const ejs = require('ejs');
+import ejs from 'ejs';
 
 //Render initial page
 async function showDashboard(req,res){
@@ -121,12 +124,24 @@ const postSignup = [
                 console.error('Error hashing password: ', err);
                 res.status(500).json({error: err});
             }
+            userInfo.hashedPassword = hashedPassword;
+            userInfo.provider = "LOCAL";
             //Create user record and add to database
-            res.json({info: userInfo, hashedPassword: hashedPassword});
-            //Create email verification token
-            //Store verification token
-            //Configure verification email
-            //Send email and redirect to verification route
+            try {
+                const user = await db.createUser(userInfo);
+                // Successful user creation
+                //Create email verification token
+                //Store verification token
+                //Configure verification email
+                //Send email and redirect to verification route
+                res.status(201).json({ message: 'User created successfully', user: user }); // Or redirect, etc.
+            } catch (error) {
+                if (error.code === 'P2002') { //Prisma unique violation code
+                    res.status(400).json({ error: 'Email already in use' });
+                } else {
+                    res.status(500).json({ error: 'Internal server error' });
+                }
+            }
         })
     }
 ]
@@ -144,6 +159,8 @@ async function getVerification(req,res){
 //Please confirm your email address to finish creating your account.
 //Confirmation button
 //Alternative link for cases in which the link doesn't work
-module.exports = {
+const communityController = {
     showDashboard, getLogin, getSignup, postSignup
 };
+
+export default communityController;

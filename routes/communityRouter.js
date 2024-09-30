@@ -1,5 +1,5 @@
-const { Router } = require("express");
-const communityController = require("../controllers/communityController.js");
+import { Router } from "express";
+import communityController from "../controllers/communityController.js";
 const communityRouter = Router();
 
 //Render events page
@@ -16,4 +16,4 @@ communityRouter.post("/signup", communityController.postSignup);
 // //Render featured event
 // communityRouter.get("/:id",communityController.getEvent);
 
-module.exports = communityRouter;
+export default communityRouter;

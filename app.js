@@ -1,28 +1,35 @@
-//Load environment variables
-require("dotenv").config();
+// Load environment variables
+import * as dotenv from 'dotenv'; 
+dotenv.config();
 
-const express = require("express");
+import express from 'express';
 const app = express();
-const path = require('node:path');
-//Routers
-const indexRouter = require("./routes/indexRouter");
-const eventsRouter = require("./routes/eventsRouter");
-//Set the url encoder to handle form post request
-app.use(express.urlencoded({extended: true}));
+import path from 'node:path';
+const __dirname = import.meta.dirname;
 
-//Set the root directory of the templates in views
-app.set("views",path.join(__dirname, "views"));
-//Enable layout support through extend('layout')
-app.engine('ejs',require('express-ejs-extend'));
-//Enable EJS as view engine
+// Routers
+import indexRouter from "./routes/indexRouter.js"; // Assuming .js extension
+import eventsRouter from "./routes/eventsRouter.js"; 
+
+// Set the url encoder to handle form post request
+app.use(express.urlencoded({ extended: true }));
+
+// Set the root directory of the templates in views
+app.set("views", path.join(__dirname, "views"));
+
+// Enable layout support through extend('layout')
+import expressEjsExtend from 'express-ejs-extend'; 
+app.engine('ejs', expressEjsExtend);
+
+// Enable EJS as view engine
 app.set("view engine", "ejs");
 
-//Set the directory for static assets
+// Set the directory for static assets
 const assetsPath = path.join(__dirname, "public");
 app.use(express.static(assetsPath));
 
-//Date formatting
-const dayjs = require("dayjs");
+// Date formatting
+import dayjs from 'dayjs';
 app.use((req,res,next) => {
     res.locals.dayjs = dayjs;
     next();

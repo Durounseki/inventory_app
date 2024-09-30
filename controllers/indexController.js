@@ -1,14 +1,14 @@
 //Database
-const db = require('../db/queries');
+import * as db from '../db/indexQueries.js';
 
 //Create index views
 
 async function getHome(req, res){
-    const events = await db.getAllEvents();
-    console.log(events[0].venue)
     res.render("index",{title: "Home", events: events});
 };
 
-module.exports = {
+const indexController = {
     getHome,
-}
+};
+
+export default indexController;

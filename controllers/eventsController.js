@@ -1,19 +1,26 @@
-require("dotenv").config();
-//Database
-const db = require('../db/queries');
-//Dates
-const dayjs = require('dayjs');
-//Form validation
-const { body, validationResult } = require("express-validator");
-//Handle file uploads
-const multer = require('multer');
-//Resize and convert images
-const sharp = require('sharp');
+import * as dotenv from 'dotenv'; 
+dotenv.config();
+
+// Database
+import * as db from '../db/eventQueries.js';
+
+// Dates
+import dayjs from 'dayjs';
+
+// Form validation
+import { body, validationResult } from "express-validator";
+
+// Handle file uploads
+import multer from 'multer';
+
+// Resize and convert images
+import sharp from 'sharp';
+
 //Set up storage
 const storage = multer.memoryStorage()
 //Configure cloud storage
 const upload = multer({storage: storage});
-const { S3Client, PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const bucketName = process.env.BUCKET_NAME
 const bucketRegion = process.env.BUCKET_REGION
@@ -28,13 +35,13 @@ const s3 = new S3Client({
     region: bucketRegion
 });
 //Encrypt file name
-const crypto = require('crypto');
+import crypto from 'crypto';
 const randomImageName = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
 //Configure server to download image using cdn CloudFront
-const { getSignedUrl } = require('@aws-sdk/cloudfront-signer');
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 
-//EJS engine
-const ejs = require('ejs');
+// EJS engine
+import ejs from 'ejs';
 
 //fetch images
 async function getImageUrl(event){
@@ -207,11 +214,11 @@ async function searchEvents(req, res){
 //Edit event
 
 //Delete event
-
-module.exports = {
+const eventsController = {
     getEvents,
     getEvent,
     getCreateEvent,
     postCreateEvent,
     searchEvents
 }
+export default eventsController;

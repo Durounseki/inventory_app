@@ -18,6 +18,19 @@ async function createUser(userInfo){
 
 }
 
+async function createVerificationToken(userId,token,expiresAt){
+    const storedToken = await prisma.verificationToken.create({
+        data:{
+            token: token,
+            expiresAt: expiresAt,
+            user: {connect: {id: userId}}
+        }
+    });
+
+    console.log('Verification token created and linked to user!');
+    return storedToken;
+}
+
 export {
-    createUser
+    createUser, createVerificationToken
 }

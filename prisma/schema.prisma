@@ -21,21 +21,23 @@ model DanceEvent {
 }
 
 model Users {
-  id             String         @id @default(uuid())
-  name           String
-  email          String         @unique
-  style          String[]
-  country        String?
-  bio            String?
-  sns            SNS[]
-  profilePic     Json?
-  role           Role[]         @default([DANCER])
-  signupProvider SignupProvider
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime?
-  lastLogin      DateTime?
-  verified       Boolean        @default(false)
-  preferences    Preferences?
+  id                String             @id @default(uuid())
+  name              String
+  email             String             @unique
+  style             String[]
+  country           String?
+  bio               String?
+  sns               SNS[]
+  profilePic        Json?
+  role              Role[]             @default([DANCER])
+  signupProvider    SignupProvider
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime?
+  lastLogin         DateTime?
+  verificationToken VerificationToken?
+  verified          Boolean            @default(false)
+  preferences       Preferences?
+  password          String
 }
 
 model SNS {
@@ -51,6 +53,14 @@ model Preferences {
   userId              String  @unique
   user                Users   @relation(fields: [userId], references: [id], onDelete: Cascade)
   showAssistingEvents Boolean @default(true)
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime @default(now())
+  userId    String   @unique
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

@@ -11,13 +11,8 @@ const saltRounds = 10;
 
 import crypto from 'crypto';
 const generateVerificationToken = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
 
-const mailerSend = new MailerSend({
-    apiKey: process.env.MAILERSEND_TOKEN,
-});
-  
-const sentFrom = new Sender(process.env.MAILERSEND_EMAIL, "The Dance Thread");
+import sendVerificationEmail from './emailTemplate.js';
 
 //EJS engine
 import ejs from 'ejs';
@@ -135,59 +130,40 @@ const postSignup = [
             }
             userInfo.hashedPassword = hashedPassword;
             userInfo.provider = "LOCAL";
+            
             //Create user record and add to database
             try {
-                const user = await db.createUser(userInfo);
-                if(user){
-                    //Create email verification token
-                    const verificationToken = generateVerificationToken();
-                    const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
-                    //Configure verification email
-                    const recipients = [
-                        new Recipient(user.email, user.name)
-                    ];
-                      
-                    const emailParams = new EmailParams()
-                    .setFrom(sentFrom)
-                    .setTo(recipients)
-                    .setSubject("Please verify your email")
-                    .setHtml(`
-                        <!DOCTYPE html>
-                        <html>
-                            <head>
-                                <meta charset="utf-8">
-                            </head>
-                            <body>
-                                <p>Hello ${user.name}!</p>
-                                <p>Click on the link below to verify your email</p>
-                                <a href="${verificationLink}" style="display: inline-block; padding: 10px 20px; background-color: #ffa6db; color: #fff5ff; text-decoration: none; border-radius: 5px;">Verify Email</a>
-                            </body>
-                        </html>
-                        `
-                    )
-                    .setText(`
-                        Hello, ${user.name}! Please verify your email using this link:
-                        ${verificationLink}
-                        `,
-                    );
-                      
-                    mailerSend.email
-                    .send(emailParams)
-                    .then((response) => console.log('Email sent successfully: ', response))
-                    .catch((error) => {
-                        console.log("Error sending email: ",error)
-                        res.status(500).json({error: 'Internal server error'});
-                    });
-                    //Store verification token
 
-                }
+                const user = await db.createUser(userInfo);
                 
-                //Send email and redirect to verification route
-                res.status(201).json({ message: 'User created successfully', user: user }); // Or redirect, etc.
+                //Create email verification token
+                const verificationToken = generateVerificationToken();
+                const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
+                
+                const emailResult = await sendVerificationEmail(user,verificationLink);
+                console.log("Email result: ", emailResult);
+
+                if(emailResult.statusCode === 202){
+                    const expiresAt = new Date();
+                    expiresAt.setDate(expiresAt.getDate()+1);//One day validity
+                    //Store verification token
+                    try{
+                        const storedToken = await db.createVerificationToken(user.id,verificationToken,expiresAt)
+                        console.log('User created successfully')
+                        res.redirect('verification');
+                    }catch(error){
+                        console.log("Error storing token");
+                        res.status(500).json({error: 'Internal server error'});
+                    }
+                }else{
+                    res.status(500).json({error: 'Internal server error'});   
+                }
+
             } catch (error) {
                 if (error.code === 'P2002') { //Prisma unique violation code
                     res.status(400).json({ error: 'Email already in use' });
                 } else {
+                    console.log("Error creating user: ", error);
                     res.status(500).json({ error: 'Internal server error' });
                 }
             }
@@ -197,10 +173,19 @@ const postSignup = [
 
 async function getVerification(req,res){
     //get verification token from the request
-    //If there is a verification token
-        //Show "Account verified start exploring"
-    //else
-        //Show "Please check your email at emailUrl and click the verification link to complete your sign-up"
+    const token = req.params.token;
+    if(token){
+        //Check token validity
+        //If valid token
+            //Show "Account verified start exploring"
+            //Update database
+        //Else
+            //Invalid token
+            //Send token again
+        res.send("Account verified, start exploring!")
+    }else{
+        res.send("Please check your email and follow the instructions to complete your sign-up")
+    }
 }
 //Confirmation email
 //Logo
@@ -209,7 +194,7 @@ async function getVerification(req,res){
 //Confirmation button
 //Alternative link for cases in which the link doesn't work
 const communityController = {
-    showDashboard, getLogin, getSignup, postSignup
+    showDashboard, getLogin, getSignup, postSignup, getVerification
 };
 
 export default communityController;

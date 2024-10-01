@@ -11,17 +11,8 @@ const saltRounds = 10;
 
 import crypto from 'crypto';
 const generateVerificationToken = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-import nodemailer from 'nodemailer';
-//Set up transporter
-const transporter = nodemailer.createTransport({
-    host: 'smtp.sendgrid.net',
-    port: 587,
-    auth: {
-        user: "apikey",
-        pass: process.env.SENDGRID_KEY
-    }
-})
-
+import sgMail from '@sendgrid/mail';
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 //EJS engine
 import ejs from 'ejs';
@@ -147,10 +138,10 @@ const postSignup = [
                     const verificationToken = generateVerificationToken();
                     const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
                     //Configure verification email
-                    const emailOptions = {
+                    const message = {
                         from: process.env.SENDGRID_EMAIL,
                         to: user.email,
-                        subject: 'Please verify your email',
+                        subject: 'SendGrid test',
                         text: `
                         Hello, ${user.name}! Please verify your email using this link:
                         ${verificationLink}
@@ -169,14 +160,14 @@ const postSignup = [
                         </html>
                         `
                     }
-                    const emailInfo = await transporter.sendMail(emailOptions, (error, info) => {
-                        if(error){
-                            console.log('Error sending email: ', error);
+                    console.log(message);
+                    try {
+                        await sgMail.send(message);
+                        console.log('Email sent successfully');
+                    }catch(error){
+                        console.log('Error sending email: ', error);
                             res.status(500).json({error: 'Internal server error'})
-                        }else{
-                            console.log('Message sent: ', info.response);
-                        }
-                    });
+                    }
                     //Store verification token
 
                 }

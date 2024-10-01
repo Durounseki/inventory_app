@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv'; 
+dotenv.config();
+
 //Data base
 import * as db from '../db/communityQueries.js';
 //Form validation
@@ -7,7 +10,17 @@ import bcrypt from 'bcrypt';
 const saltRounds = 10;
 
 import crypto from 'crypto';
-const randomImageSeed = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
+const generateVerificationToken = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
+import nodemailer from 'nodemailer';
+//Set up transporter
+const transporter = nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
+    auth: {
+        user: "apikey",
+        pass: process.env.SENDGRID_KEY
+    }
+})
 
 
 //EJS engine
@@ -129,10 +142,45 @@ const postSignup = [
             //Create user record and add to database
             try {
                 const user = await db.createUser(userInfo);
-                // Successful user creation
-                //Create email verification token
-                //Store verification token
-                //Configure verification email
+                if(user){
+                    //Create email verification token
+                    const verificationToken = generateVerificationToken();
+                    const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
+                    //Configure verification email
+                    const emailOptions = {
+                        from: process.env.SENDGRID_EMAIL,
+                        to: user.email,
+                        subject: 'Please verify your email',
+                        text: `
+                        Hello, ${user.name}! Please verify your email using this link:
+                        ${verificationLink}
+                        `,
+                        html: `
+                        <!DOCTYPE html>
+                        <html>
+                            <head>
+                                <meta charset="utf-8">
+                            </head>
+                            <body>
+                                <p>Hello ${user.name}!</p>
+                                <p>Click on the link below to verify your email</p>
+                                <a href="${verificationLink}" style="display: inline-block; padding: 10px 20px; background-color: #ffa6db; color: #fff5ff; text-decoration: none; border-radius: 5px;">Verify Email</a>
+                            </body>
+                        </html>
+                        `
+                    }
+                    const emailInfo = await transporter.sendMail(emailOptions, (error, info) => {
+                        if(error){
+                            console.log('Error sending email: ', error);
+                            res.status(500).json({error: 'Internal server error'})
+                        }else{
+                            console.log('Message sent: ', info.response);
+                        }
+                    });
+                    //Store verification token
+
+                }
+                
                 //Send email and redirect to verification route
                 res.status(201).json({ message: 'User created successfully', user: user }); // Or redirect, etc.
             } catch (error) {

@@ -11,8 +11,13 @@ const saltRounds = 10;
 
 import crypto from 'crypto';
 const generateVerificationToken = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-import sgMail from '@sendgrid/mail';
-sgMail.setApiKey(process.env.SENDGRID_KEY);
+import { MailerSend, EmailParams, Sender, Recipient } from "mailersend";
+
+const mailerSend = new MailerSend({
+    apiKey: process.env.MAILERSEND_TOKEN,
+});
+  
+const sentFrom = new Sender(process.env.MAILERSEND_EMAIL, "The Dance Thread");
 
 //EJS engine
 import ejs from 'ejs';
@@ -138,15 +143,15 @@ const postSignup = [
                     const verificationToken = generateVerificationToken();
                     const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
                     //Configure verification email
-                    const message = {
-                        from: process.env.SENDGRID_EMAIL,
-                        to: user.email,
-                        subject: 'SendGrid test',
-                        text: `
-                        Hello, ${user.name}! Please verify your email using this link:
-                        ${verificationLink}
-                        `,
-                        html: `
+                    const recipients = [
+                        new Recipient(user.email, user.name)
+                    ];
+                      
+                    const emailParams = new EmailParams()
+                    .setFrom(sentFrom)
+                    .setTo(recipients)
+                    .setSubject("Please verify your email")
+                    .setHtml(`
                         <!DOCTYPE html>
                         <html>
                             <head>
@@ -159,15 +164,20 @@ const postSignup = [
                             </body>
                         </html>
                         `
-                    }
-                    console.log(message);
-                    try {
-                        await sgMail.send(message);
-                        console.log('Email sent successfully');
-                    }catch(error){
-                        console.log('Error sending email: ', error);
-                            res.status(500).json({error: 'Internal server error'})
-                    }
+                    )
+                    .setText(`
+                        Hello, ${user.name}! Please verify your email using this link:
+                        ${verificationLink}
+                        `,
+                    );
+                      
+                    mailerSend.email
+                    .send(emailParams)
+                    .then((response) => console.log('Email sent successfully: ', response))
+                    .catch((error) => {
+                        console.log("Error sending email: ",error)
+                        res.status(500).json({error: 'Internal server error'});
+                    });
                     //Store verification token
 
                 }

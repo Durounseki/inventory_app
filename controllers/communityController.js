@@ -28,6 +28,7 @@ async function showDashboard(req,res){
 
 //Login page
 async function getLogin(req,res){
+    console.log(req.session.passport.user)
     res.render("login",{title: "Log in", script: "login.js"});
 }
 
@@ -149,8 +150,22 @@ const postSignup = [
                     //Store verification token
                     try{
                         const storedToken = await db.createVerificationToken(user.id,verificationToken,expiresAt)
-                        console.log('User created successfully')
-                        res.redirect('verification');
+                        //Start session
+                        req.session.regenerate(err => {
+                            if (err) {
+                              console.error('Error regenerating session:', err);
+                              return res.status(500).json({ error: 'Internal server error' });
+                            }
+                            // Serialize the user into the new session
+                            req.login(user, err => { 
+                              if (err) {
+                                console.error('Error logging in user:', err);
+                                return res.status(500).json({ error: 'Internal server error' });
+                              }
+                              console.log('User created successfully')
+                              res.redirect('/community/verification'); 
+                            });
+                          });
                     }catch(error){
                         console.log("Error storing token");
                         res.status(500).json({error: 'Internal server error'});
@@ -172,19 +187,63 @@ const postSignup = [
 ]
 
 async function getVerification(req,res){
-    //get verification token from the request
+    //Check token
     const token = req.params.token;
     if(token){
-        //Check token validity
-        //If valid token
-            //Show "Account verified start exploring"
-            //Update database
-        //Else
-            //Invalid token
-            //Send token again
-        res.send("Account verified, start exploring!")
+        //Check session
+        if(req.isAuthenticated()){
+            //Check token validity
+            try{
+                const verifiedToken = await db.verifyToken(token);
+                req.session.regenerate(async (err) => {
+                    if(err){
+                        console.error('Error regenerating session: ', err);
+                        return res.status(500).json({error: 'Internal server error'});
+                    }
+                    //Update database
+                    console.log('regenerating session');
+                    
+                    //Verify user and delete token
+                    try{
+                        console.log('verifying user');
+                        const verifiedUser = await db.verifyUser(verifiedToken);
+                        try{
+                            console.log('Removing token');
+                            await db.removeVerificationToken(verifiedToken);
+                            //Serialize user into new session
+                            req.login(verifiedUser, err => { 
+                                if (err) {
+                                    console.error('Error logging in user:', err);
+                                    return res.status(500).json({ error: 'Internal server error' });
+                                }
+                                res.redirect('/community/login'); 
+                            });
+                        }catch(error){
+                            console.log('Error removing token: ', error);
+                            return res.status(500).json({error: 'Internal server error'});
+                        }
+                    }catch(error){
+                        console.log('Error verifying user: ', error);
+                        return res.status(500).json({error: 'Internal server error'});
+                    }
+                    
+                })
+
+            }catch(error){
+                //Invalid token
+                console.log('Error verifying token');
+                res.status(400).json({error: error.message});
+            }   
+        }else{
+            console.log('Session expired')
+            res.send("It seems that your link expired. Enter your email below to get a new verification link")
+        }
     }else{
-        res.send("Please check your email and follow the instructions to complete your sign-up")
+        if(req.isAuthenticated()){
+            res.send("Please check your email and follow the instructions to complete your sign-up")
+        }else{
+            res.redirect('/community/login');
+        }
     }
 }
 //Confirmation email

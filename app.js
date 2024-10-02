@@ -1,11 +1,86 @@
 // Load environment variables
 import * as dotenv from 'dotenv'; 
 dotenv.config();
-
 import express from 'express';
 const app = express();
 import path from 'node:path';
 const __dirname = import.meta.dirname;
+
+//CORS
+import cors from 'cors';
+const PORT = process.env.PORT || 3000;
+const corsOptions = {
+    origin: 'http://localhost:'+PORT,
+    credentials: true,
+}
+app.use(cors(corsOptions));
+
+//Session
+import session from 'express-session';
+import {PrismaSessionStore} from '@quixo3/prisma-session-store';
+import prisma from './db/client.js';
+const store = new PrismaSessionStore(
+    prisma,
+    {
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }
+  )
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        store: store,
+        cookie: {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'Strict',
+            maxAge: 60*60*1000 //one hour validity
+        },
+    })
+);
+
+//Authentication
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import bcrypt from 'bcrypt';
+app.use(passport.session());
+const localStrategy = new LocalStrategy(
+    {
+        usernameField: 'email',
+        passwordField: 'password'
+    },
+    async(username, password, done) => {
+        try{
+            const user = await prisma.users.findUnique({where: {email}});
+            if(!user){
+                return done(null,false,{message: 'Incorrect email'});
+            }
+            const match = await bcrypt.compare(password, user.password);
+            if(!match){
+                return done(null, false, {message: 'Incorrect password'})
+            }
+            return done(null, user);
+        }catch(error){
+            return done(error);
+        }
+    }
+)
+
+passport.use(localStrategy);
+passport.serializeUser((user,done) => {
+    done(null,user.id);
+});
+passport.deserializeUser(async(id,done)=>{
+    try{
+        const user = prisma.users.findUnique({where: {id}});
+        done(null, user);
+    }catch(error){
+        done(error);
+    }
+})
+
 
 // Routers
 import indexRouter from "./routes/indexRouter.js"; // Assuming .js extension
@@ -77,5 +152,4 @@ app.use("/events",eventsRouter);
 app.use("/community",communityRouter);
 
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`App listening on port ${PORT}!`));

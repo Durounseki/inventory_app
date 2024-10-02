@@ -31,6 +31,64 @@ async function createVerificationToken(userId,token,expiresAt){
     return storedToken;
 }
 
+async function verifyToken(token){
+    try{
+        const verifiedToken = await prisma.verificationToken.findUnique({where: {token: token}});
+        if(!verifiedToken){
+            throw new Error('Invalid verification link')
+        }
+        const currentTime = new Date();
+        if(verifiedToken.expiresAt < currentTime){
+            throw new Error('Verification link expired')
+        }
+        console.log("Token verified");
+        return verifiedToken;
+    }catch(error){
+        console.error('Error verifying token: ', error);
+        if(error.message === 'Invalid verification link' || error.message === 'Verification link expired'){
+            throw error;
+        }else{
+            throw new Error('Failed to verify token')
+        }
+    }
+}
+
+async function verifyUser(token){
+    try{
+        const verifiedUser = await prisma.users.findUnique({
+            where: {id: token.userId}
+        });
+
+        if(!verifiedUser){
+            throw new Error('User not found');
+        }
+
+        await prisma.users.update({
+            where: { id: verifiedUser.id },
+            data: {
+                verified: true,
+                updatedAt: new Date(),
+                lastLogin: new Date()
+            }
+        });
+
+        console.log("user verified");
+        return verifiedUser;
+    }catch(error){
+        throw error;
+    }
+}
+
+async function removeVerificationToken(token){
+    try{
+        await prisma.verificationToken.delete({where: {id: token.id}})
+        console.log("Token removed");
+        return true;
+    }catch(error){
+        throw error;
+    }
+}
+
 export {
-    createUser, createVerificationToken
+    createUser, createVerificationToken, verifyToken, verifyUser, removeVerificationToken
 }

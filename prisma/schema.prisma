@@ -63,6 +63,13 @@ model VerificationToken {
   user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Session {
+  id        String   @id @default(cuid())
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
 enum Role {
   DANCER
   ARTIST

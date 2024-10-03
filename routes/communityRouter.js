@@ -6,18 +6,14 @@ const communityRouter = Router();
 communityRouter.get("/", communityController.showDashboard);
 //Render login page
 communityRouter.get("/login", communityController.getLogin);
-
+communityRouter.post("/login", communityController.postLogin);
 //Render signup page
 communityRouter.get("/signup", communityController.getSignup);
 communityRouter.post("/signup", communityController.postSignup);
 //Render verification route
 communityRouter.get("/verification/:token", communityController.getVerification);
 communityRouter.get("/verification", communityController.getVerification);
-
-// //Search event
-// communityRouter.post("/search", communityController.searchcommunity);
-
-// //Render featured event
-// communityRouter.get("/:id",communityController.getEvent);
+//Render profile page
+communityRouter.get("/profile", communityController.getProfile);
 
 export default communityRouter;

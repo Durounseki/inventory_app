@@ -48,18 +48,18 @@ import bcrypt from 'bcrypt';
 app.use(passport.session());
 const localStrategy = new LocalStrategy(
     {
-        usernameField: 'email',
-        passwordField: 'password'
+        usernameField: 'user-email',
+        passwordField: 'user-password'
     },
     async(username, password, done) => {
         try{
-            const user = await prisma.users.findUnique({where: {email}});
+            const user = await prisma.users.findUnique({where: {email: username}});
             if(!user){
-                return done(null,false,{message: 'Incorrect email'});
+                return done(null,false,{message: 'userNotFound'});
             }
             const match = await bcrypt.compare(password, user.password);
             if(!match){
-                return done(null, false, {message: 'Incorrect password'})
+                return done(null, false, {message: 'passwordMismatch'})
             }
             return done(null, user);
         }catch(error){
@@ -74,7 +74,7 @@ passport.serializeUser((user,done) => {
 });
 passport.deserializeUser(async(id,done)=>{
     try{
-        const user = prisma.users.findUnique({where: {id}});
+        const user = await prisma.users.findUnique({where: {id}});
         done(null, user);
     }catch(error){
         done(error);

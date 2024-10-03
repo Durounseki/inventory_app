@@ -11,12 +11,8 @@ function ensureAuthenticated(req,res,next){
     if(req.isAuthenticated()){
         return next();
     }
-    res.redirect('/login');
-}
-
-
-function verifyUser(){
-
+    console.log('Unauthorized user');
+    res.redirect('/community/login');
 }
 
 
@@ -35,14 +31,14 @@ async function ensureVerifiedUser(req, user){
             if(verificationToken){
                 const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
                 console.log(verificationLink);
-                // try{
-                //     console.log('Sending email');
-                //     const emailResult = await sendVerificationEmail(user,verificationLink);
+                try{
+                    console.log('Sending email');
+                    const emailResult = await sendVerificationEmail(user,verificationLink);
                     return false;
-                // }catch(error){
-                //     console.log("Error sending email: ", error);
-                //     throw error;
-                // }
+                }catch(error){
+                    console.log("Error sending email: ", error);
+                    throw error;
+                }
             }
 
         }catch(error){
@@ -59,10 +55,16 @@ async function ensureVerifiedUser(req, user){
             throw error;
         }
 
+    }else{
+        try{
+            await db.removeVerificationToken(user.id);
+            console.log('User is verified');
+            return true;
+        }catch(error){
+            console.log('Error removing token: ', error);
+            throw error;
+        }
     }
-    
-    console.log('User is verified');
-    return true;
 
 }
 
@@ -188,6 +190,26 @@ async function signUpUser(req,res,next){
 
 }
 
+async function verifyUser(req, res, next){
+    //Check token
+    const token = req.params.token;
+    if(token){
+        //Check token validity
+        try{
+            const verifiedToken = await db.verifyToken(token);
+            await db.removeVerificationToken(verifiedToken.userId);
+            const verifiedUser = await db.verifyUser(verifiedToken);
+            const userLoggedIn = await loginUser(req,verifiedUser);
+            res.redirect('/community/profile');
+        }catch(error){
+            console.log('Error verifying user: ', error);
+            throw error;
+        }
+    }else{
+        res.send("Please check your email and follow the instructions to complete your sign-up")
+    }
+}
+
 export {
-    ensureVerifiedUser, loginUser, authenticateUser, signUpUser
+    ensureAuthenticated, ensureVerifiedUser, loginUser, authenticateUser, signUpUser, verifyUser
 }

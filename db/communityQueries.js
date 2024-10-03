@@ -18,7 +18,7 @@ async function createUser(userInfo){
 
 }
 
-async function createVerificationToken(userId,token,expiresAt){
+async function storeVerificationToken(userId,token,expiresAt){
     const storedToken = await prisma.verificationToken.create({
         data:{
             token: token,
@@ -79,16 +79,17 @@ async function verifyUser(token){
     }
 }
 
-async function removeVerificationToken(token){
-    try{
-        await prisma.verificationToken.delete({where: {id: token.id}})
+async function removeVerificationToken(userId){
+    
+    const storedToken = await prisma.verificationToken.findUnique({where: {userId: userId}});
+    if(storedToken){
+        await prisma.verificationToken.delete({where: {userId: userId}})
         console.log("Token removed");
-        return true;
-    }catch(error){
-        throw error;
-    }
+    }    
+    return true;
+    
 }
 
 export {
-    createUser, createVerificationToken, verifyToken, verifyUser, removeVerificationToken
+    createUser, storeVerificationToken, verifyToken, verifyUser, removeVerificationToken
 }

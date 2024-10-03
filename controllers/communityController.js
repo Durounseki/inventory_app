@@ -5,20 +5,9 @@ dotenv.config();
 import * as db from '../db/communityQueries.js';
 //Form validation
 import {loginValidators, signupValidators, validateUserForm} from './validators.js';
-//Password encryption
-import bcrypt from 'bcrypt';
-const saltRounds = 10;
-
-import crypto from 'crypto';
-const generateVerificationToken = (bytes = 32) => crypto.randomBytes(bytes).toString('hex')
-
-import sendVerificationEmail from './emailTemplate.js';
-
-//EJS engine
-import ejs from 'ejs';
 
 //Authentication
-import {authenticateUser} from './auth.js';
+import {authenticateUser, signUpUser } from './auth.js';
 
 //Render initial page
 async function showDashboard(req,res){
@@ -69,71 +58,11 @@ async function getSignup(req,res){
 const postSignup = [
     signupValidators,
     validateUserForm,
-    async (req,res) => {
-        //Hash password
-        bcrypt.hash(userInfo['user-password'], saltRounds, async (err, hashedPassword) => {
-            if(err){
-                console.error('Error hashing password: ', err);
-                res.status(500).json({error: err});
-            }
-            userInfo.hashedPassword = hashedPassword;
-            userInfo.provider = "LOCAL";
-            
-            //Create user record and add to database
-            try {
-
-                const user = await db.createUser(userInfo);
-                
-                //Create email verification token
-                const verificationToken = generateVerificationToken();
-                const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationToken}`;
-                
-                const emailResult = await sendVerificationEmail(user,verificationLink);
-                console.log("Email result: ", emailResult);
-
-                if(emailResult.statusCode === 202){
-                    const expiresAt = new Date();
-                    expiresAt.setDate(expiresAt.getDate()+1);//One day validity
-                    //Store verification token
-                    try{
-                        const storedToken = await db.createVerificationToken(user.id,verificationToken,expiresAt)
-                        //Start session
-                        req.session.regenerate(err => {
-                            if (err) {
-                              console.error('Error regenerating session:', err);
-                              return res.status(500).json({ error: 'Internal server error' });
-                            }
-                            // Serialize the user into the new session
-                            req.login(user, err => { 
-                              if (err) {
-                                console.error('Error logging in user:', err);
-                                return res.status(500).json({ error: 'Internal server error' });
-                              }
-                              console.log('User created successfully')
-                              res.redirect('/community/verification'); 
-                            });
-                          });
-                    }catch(error){
-                        console.log("Error storing token");
-                        res.status(500).json({error: 'Internal server error'});
-                    }
-                }else{
-                    res.status(500).json({error: 'Internal server error'});   
-                }
-
-            } catch (error) {
-                if (error.code === 'P2002') { //Prisma unique violation code
-                    res.status(400).json({ error: 'Email already in use' });
-                } else {
-                    console.log("Error creating user: ", error);
-                    res.status(500).json({ error: 'Internal server error' });
-                }
-            }
-        })
-    }
+    signUpUser
 ]
 
 async function getVerification(req,res){
+    console.log(req.session.passport);
     //Check token
     const token = req.params.token;
     if(token){
@@ -156,7 +85,7 @@ async function getVerification(req,res){
                         const verifiedUser = await db.verifyUser(verifiedToken);
                         try{
                             console.log('Removing token');
-                            await db.removeVerificationToken(verifiedToken);
+                            await db.removeVerificationToken(verifiedToken.userId);
                             //Serialize user into new session
                             req.login(verifiedUser, err => { 
                                 if (err) {

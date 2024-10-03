@@ -47,9 +47,7 @@ const signupValidators = [
 ]
 
 function validateUserForm(req, res, next){
-    //Get user info
-    const userInfo = req.body
-    console.log(userInfo);
+    
     //Check for errors
     const errors = validationResult(req);
     if(!errors.isEmpty()){
@@ -58,7 +56,7 @@ function validateUserForm(req, res, next){
             console.error('Bot detected during signup attempt!');
             return res.status(400).json({errors: [{msg: 'Invalid submission'}]});
         }else{
-            return res.status(400).json({info: userInfo, errors: errors.errors});
+            return res.status(400).json({errors: errors.errors});
         }
     }
     console.log('No errors!');

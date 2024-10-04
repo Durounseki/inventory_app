@@ -157,7 +157,7 @@ async function sendTokenEmail(user,baseUrl,removeToken,storeToken,sendEmail){
             console.log(link);
             try{
                 console.log('Sending email');
-                const emailResult = await sendEmail(user,link);
+                // const emailResult = await sendEmail(user,link);
                 return true;
             }catch(error){
                 console.log("Error sending email: ", error);
@@ -224,11 +224,9 @@ async function authenticateUser(req,res,next){
             if(!user){
                 if(info.message === 'userNotFound'){
                     console.log('User account not found');
-                    req.emailError = 'Account not found';
                 }
                 if(info.message === 'passwordMismatch'){
                     console.log('Incorrect password')
-                    req.passwordError = 'Incorrect password, please try again'
                 }
                 return res.redirect('/community/login');   
             }
@@ -237,7 +235,7 @@ async function authenticateUser(req,res,next){
                 const verifiedUser = await ensureVerifiedUser(req, user);
                 if(verifiedUser){
                     await db.updateLastLogin(user.id);
-                    res.redirect('/community/profile');
+                    res.redirect(`/community/profile/${user.id}`);
                 }else{
                     res.redirect('/community/verification?emailSent=true');
                 }
@@ -323,7 +321,9 @@ async function sendResetToken(req, res, next){
     //Get user info
     const userInfo = req.body
     try{
-        const user = await db.findUserByEmail(userInfo.email);
+        console.log('Finding user', userInfo['user-email']);
+        const user = await db.findUserByEmail(userInfo['user-email']);
+        console.log(user);
         if(user){
 
             console.log('Sending reset password email');
@@ -373,8 +373,8 @@ async function sendResetToken(req, res, next){
             throw new Error('User account not found');
         }
     }catch(error){
-        console.log('Error resetting password')
-        res.status(500).json({error: error});
+        console.log('Error resetting password: ',error);
+        res.status(500).json({error: error.message});
     }
 
 }

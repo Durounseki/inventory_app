@@ -20,6 +20,10 @@ async function showDashboard(req,res){
 
 //Login page
 async function getLogin(req,res){
+    //Check if user is logged in
+    //If so
+        //Redirect to profile
+    //If not
     res.render("login",{title: "Log in", script: "login.js"});
 }
 

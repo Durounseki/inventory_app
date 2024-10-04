@@ -19,7 +19,7 @@ async function createUser(userInfo){
 }
 
 async function findUserByEmail(email){
-    const user = await prisma.users.findUnique({where: {email: userInfo.email}});
+    const user = await prisma.users.findUnique({where: {email: email}});
     console.log('Found user');
     return user;
 }
@@ -86,12 +86,14 @@ async function verifyUser(userId){
             throw new Error('User not found');
         }
 
+        const now = new Date();
         await prisma.users.update({
             where: { id: verifiedUser.id },
             data: {
                 verified: true,
-                updatedAt: new Date(),
-                lastLogin: new Date()
+                updatedAt: now,
+                lastLogin: now,
+                loginCount: {increment: 1}
             }
         });
 
@@ -162,7 +164,8 @@ async function resetPassword(userId, hashedPassword){
         await prisma.users.update({
             where: { id: user.id },
             data: {
-                password: hashedPassword
+                password: hashedPassword,
+                passwordUpdatedAt: new Date()
             }
         });
 
@@ -176,10 +179,13 @@ async function resetPassword(userId, hashedPassword){
 
 async function updateLastLogin(userId){
     
+    const now = new Date();
     await prisma.users.update({
         where: {id: userId},
         data: {
-            lastLogin: new Date()
+            lastLogin: now,
+            loginCount: {increment: 1},
+            updatedAt: now
         }
     });
     

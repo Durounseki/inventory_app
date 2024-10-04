@@ -15,12 +15,12 @@ communityRouter.get("/verification/:tokenId", communityController.getVerificatio
 communityRouter.get("/verification", communityController.getVerification);
 //Render forgot password page
 communityRouter.get("/forgot-password", communityController.getForgotPassword);
-communityRouter.get("/forgot-password", communityController.postForgotPassword);
+communityRouter.post("/forgot-password", communityController.postForgotPassword);
 //Render reset password page
 communityRouter.get("/reset-password/:tokenId", communityController.getResetPassword);
 communityRouter.get("/reset-password", communityController.getResetPassword);
 communityRouter.post("/reset-password", communityController.postResetPassword);
 //Render profile page
-communityRouter.get("/profile", communityController.getProfile);
+communityRouter.get("/profile/:userId", communityController.getProfile);
 
 export default communityRouter;

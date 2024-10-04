@@ -4,10 +4,10 @@ dotenv.config();
 //Data base
 import * as db from '../db/communityQueries.js';
 //Form validation
-import {loginValidators, signupValidators, validateUserForm} from './validators.js';
+import {loginValidators, signupValidators, forgotPasswordValidators, resetPasswordValidators, validateUserForm} from './validators.js';
 
 //Authentication
-import {authenticateUser, signUpUser, ensureAuthenticated, verifyUser } from './auth.js';
+import {authenticateUser, signUpUser, ensureAuthenticated, verifyUser, sendResetToken, passwordResetAuthenticate, resetPassword } from './auth.js';
 
 //Render initial page
 async function showDashboard(req,res){
@@ -30,25 +30,26 @@ const postLogin = [
 ]
 
 async function getForgotPassword(req,res){
-    req.render("forgot-password",{title: "Forgot password", script: "forgot-password.js"});
+    res.render("forgot-password",{title: "Forgot password", script: "forgot-password.js"});
 }
 
-const validateForgotPassword = [
-
+const postForgotPassword = [
+    forgotPasswordValidators,
+    validateUserForm,
+    sendResetToken
 ]
 
-const postForgotPassword = [
-    validateForgotPassword,
-    async (req,res) => {
-        
-        //Get user from database using email
-        //If user exists
-            //Create new token
-            //Send email
-            //Show "Email sent"
-        //If user doesn't exists
-            //Show "Unknown user" and render again
+const getResetPassword = [
+    passwordResetAuthenticate,
+    (req, res, next) => {
+        res.render("reset-password",{title: "Reset password", script: "reset-password.js"});
     }
+]
+
+const postResetPassword = [
+    resetPasswordValidators,
+    validateUserForm,
+    resetPassword
 ]
 
 async function getSignup(req,res){
@@ -62,17 +63,32 @@ const postSignup = [
 ]
 
 const getVerification = [
-    ensureAuthenticated,
-    verifyUser
+    verifyUser,
+    (req, res, next) => {
+        res.render("verification", {title: "Verification", script: "verification.js"});
+    }
 ]
 
-async function getProfile(req,res){
-    console.log("user: ", req.user);
-    res.send(req.user);
-}
+const getProfile = [
+    ensureAuthenticated,
+    async (req,res,next) => {
+        const user = req.user;
+        res.render('profile', {title: "Profile", user: user, script: "profile.js"});
+    }
+]
 
 const communityController = {
-    showDashboard, getLogin, postLogin, getSignup, postSignup, getVerification, getProfile
+    showDashboard,
+    getLogin,
+    postLogin,
+    getForgotPassword,
+    postForgotPassword,
+    getResetPassword,
+    postResetPassword,
+    getSignup,
+    postSignup,
+    getVerification,
+    getProfile
 };
 
 export default communityController;

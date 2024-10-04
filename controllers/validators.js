@@ -11,7 +11,7 @@ const loginValidators = [
     .matches(/\W/).withMessage('Password must contain at least one special character')
     .not().matches(/\s/).withMessage('Password must not contain any spaces'),
     //HoneyPot
-    body('user-password-verify').custom((value) =>{
+    body('user-email-confirm').custom((value) =>{
         if(value) {
             throw new Error('Bot detected!');
         }
@@ -38,7 +38,43 @@ const signupValidators = [
         return true; 
     }),
     //HoneyPot
-    body('user-password-verify').custom((value) =>{
+    body('user-email-confirm').custom((value) =>{
+        if(value) {
+            throw new Error('Bot detected!');
+        }
+        return true;
+    })
+]
+
+const forgotPasswordValidators = [
+    body("user-email").trim().notEmpty().withMessage('Please enter your email')
+    .isEmail().withMessage('Please enter a valid email address'),
+    //HoneyPot
+    body('user-email-confirm').custom((value) =>{
+        if(value) {
+            throw new Error('Bot detected!');
+        }
+        return true;
+    })
+]
+
+const resetPasswordValidators = [
+
+    body("user-password").trim()
+    .isLength({ min: 8, max: 16 }).withMessage('Password must be between 8 and 16 characters long')
+    .matches(/[a-z]/).withMessage('Password must contain at least one lowercase letter')
+    .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
+    .matches(/\d/).withMessage('Password must contain at least one number')
+    .matches(/\W/).withMessage('Password must contain at least one special character')
+    .not().matches(/\s/).withMessage('Password must not contain any spaces'),
+    body('user-password-confirm').trim().custom((value, { req }) => {
+        if (value !== req.body['user-password']) {
+          throw new Error('Passwords do not match');
+        }
+        return true; 
+    }),
+    //HoneyPot
+    body('user-email').custom((value) =>{
         if(value) {
             throw new Error('Bot detected!');
         }
@@ -64,5 +100,9 @@ function validateUserForm(req, res, next){
 }
 
 export{
-    loginValidators, signupValidators, validateUserForm
+    loginValidators,
+    signupValidators,
+    forgotPasswordValidators,
+    resetPasswordValidators,
+    validateUserForm
 }

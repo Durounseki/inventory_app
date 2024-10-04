@@ -5,7 +5,7 @@ const mailerSend = new MailerSend({
   apiKey: process.env.MAILERSEND_TOKEN,
 });
 
-const sentFrom = new Sender("MS_EEu0SN@trial-3zxk54v2vyzljy6v.mlsender.net", "Your name");
+const sentFrom = new Sender(process.env.MAILERSEND_EMAIL, "The Dance Thread");
 
 const recipients = [
   new Recipient("cesparzadev@gmail.com", "Your Client")

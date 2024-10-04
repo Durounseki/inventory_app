@@ -19,6 +19,8 @@ app.use(cors(corsOptions));
 import session from 'express-session';
 import {PrismaSessionStore} from '@quixo3/prisma-session-store';
 import prisma from './db/client.js';
+import flash from 'connect-flash';
+
 const store = new PrismaSessionStore(
     prisma,
     {
@@ -40,6 +42,8 @@ app.use(
         },
     })
 );
+
+app.use(flash());
 
 //Authentication
 import passport from 'passport';

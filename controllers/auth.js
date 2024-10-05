@@ -31,43 +31,6 @@ async function ensureVerifiedUser(req, user){
             console.log('Error sending verification token: ', error);
             throw error;
         }
-        
-        // let verificationTokenId;
-        // try{
-            
-        //     verificationTokenId = await createVerificationToken(user);
-            
-        //     if(verificationTokenId){
-
-        //         const emailResult = sendTokenEmail(user,verificationTokenId,'verification',sendVerificationEmail);
-
-        //         return false
-
-        //         // const verificationLink = `${req.protocol}://${req.get('host')}/community/verification/${verificationTokenId}`;
-        //         // console.log(verificationLink);
-        //         // try{
-        //         //     console.log('Sending email');
-        //         //     const emailResult = await sendVerificationEmail(user,verificationLink);
-        //         //     return false;
-        //         // }catch(error){
-        //         //     console.log("Error sending email: ", error);
-        //         //     throw error;
-        //         // }
-        //     }
-
-        // }catch(error){
-        //     console.log('Error on the verification flow: ', error);
-        //     if(verificationTokenId){
-        //         try{
-        //             console.log('Removing token');
-        //             await db.removeVerificationToken(user.id);
-        //         }catch(error){
-        //             console.log('Error removing token: ', error);
-        //             throw error;
-        //         }
-        //     }
-        //     throw error;
-        // }
 
     }else{
         console.log('User is verified');
@@ -98,50 +61,6 @@ async function createToken(user,findToken,removeToken,storeToken){
     }
 }
 
-// async function createVerificationToken(user){
-    
-        
-//     //Create email verification token
-//     const verificationToken = generateToken();
-//     const expiresAt = new Date();
-//     expiresAt.setMinutes(expiresAt.getMinutes()+15);//15 min validity
-
-//     //Store token
-//     try{
-//         //Remove old token
-//         await db.removeVerificationToken(user.id)
-//         const storedToken = await db.storeVerificationToken(user.id,verificationToken,expiresAt);
-//         return storedToken.id;
-
-//     }catch(error){
-//         console.log('Error storing token: ', error);
-//         throw error;
-//     }
-
-// }
-
-// async function createResetToken(user){
-    
-        
-//     //Create email verification token
-//     const resetToken = generateToken();
-//     const expiresAt = new Date();
-//     expiresAt.setMinutes(expiresAt.getMinutes()+15);//15 min validity
-
-//     //Store token
-//     try{
-//         //Remove old token
-//         await db.removeResetToken(user.id)
-//         const storedToken = await db.storeResetToken(user.id,resetToken,expiresAt);
-//         return storedToken.id;
-
-//     }catch(error){
-//         console.log('Error storing token: ', error);
-//         throw error;
-//     }
-
-// }
-
 async function sendTokenEmail(user,baseUrl,findToken,removeToken,storeToken,sendEmail){
     let tokenId;
     try{
@@ -155,7 +74,7 @@ async function sendTokenEmail(user,baseUrl,findToken,removeToken,storeToken,send
             console.log(link);
             try{
                 console.log('Sending email');
-                // const emailResult = await sendEmail(user,link);
+                const emailResult = await sendEmail(user,link);
                 return true;
             }catch(error){
                 console.log("Error sending email: ", error);
@@ -263,14 +182,9 @@ async function signUpUser(req,res,next){
             const user = await db.createUser(userInfo);
             const baseUrl = `${req.protocol}://${req.get('host')}/community/verification`;
             const tokenSent = await sendTokenEmail(user,baseUrl,db.findVerificationToken,db.removeVerificationToken,db.storeVerificationToken,sendVerificationEmail);
-            // const verifiedUser = await ensureVerifiedUser(req, user);
-            // if(verifiedUser){
-            //     res.redirect('/community/profile');
-            // }else{
             if(tokenSent){
                 res.redirect('/community/verification?emailSent=true');
             }
-            // }
         }catch(error){
             if (error.code === 'P2002') { //Prisma unique violation code
                 res.status(400).json({ error: 'Email already in use' });
@@ -338,36 +252,6 @@ async function sendResetToken(req, res, next){
                 throw error;
             }
 
-            // let resetTokenId;
-            // try{
-
-            //     const resetTokenId = await createResetToken(user);
-            //     if(resetTokenId){
-            //         const emailResult = sendTokenEmail(user,resetTokenId,'reset-password',sendResetEmail)
-            //         // const resetLink = `${req.protocol}://${req.get('host')}/community/reset-password/${resetTokenId}`;
-            //         // console.log(resetLink);
-            //         // try{
-            //             //     console.log('Sending email');
-            //             //     const emailResult = await sendResetEmail(user,resetLink);
-            //             //     res.redirect('/community/reset-password?emailSent=true');
-            //             // }catch(error){
-            //                 //     console.log("Error sending email: ", error);
-            //                 //     throw error;
-            //                 // }
-            //     }
-            // }catch(error){
-            //     console.log('Error sending reset link: ', error);
-            //     if(resetTokenId){
-            //         try{
-            //             console.log('Removing token');
-            //             await db.removeResetToken(user.id);
-            //         }catch(error){
-            //             console.log('Error removing token: ', error);
-            //             throw error;
-            //         }
-            //     }
-            //     throw error;
-            // }
         }else{
             console.log('User account not found');
             throw new Error('User account not found');

@@ -23,7 +23,7 @@ async function ensureVerifiedUser(req, user){
         console.log('User not verified');
         try{
             const baseUrl = `${req.protocol}://${req.get('host')}/community/verification`;
-            const tokenSent = await sendTokenEmail(user,baseUrl,db.removeVerificationToken,db.storeVerificationToken,sendVerificationEmail);
+            const tokenSent = await sendTokenEmail(user,baseUrl,db.findVerificationToken,db.removeVerificationToken,db.storeVerificationToken,sendVerificationEmail);
             if(tokenSent){
                 return false
             }
@@ -70,19 +70,13 @@ async function ensureVerifiedUser(req, user){
         // }
 
     }else{
-        try{
-            await db.removeVerificationToken(user.id);
-            console.log('User is verified');
-            return true;
-        }catch(error){
-            console.log('Error removing token: ', error);
-            throw error;
-        }
+        console.log('User is verified');
+        return true;
     }
 
 }
 
-async function createToken(user,removeToken,storeToken){
+async function createToken(user,findToken,removeToken,storeToken){
     //Create email verification token
     const token = generateToken();
     const expiresAt = new Date();
@@ -91,7 +85,10 @@ async function createToken(user,removeToken,storeToken){
     //Store token
     try{
         //Remove old token
-        await removeToken(user.id)
+        const oldToken = await findToken(user.id);
+        if(oldToken){
+            await removeToken(oldToken.id);
+        }
         const storedToken = await storeToken(user.id,token,expiresAt);
         return storedToken.id;
 
@@ -145,10 +142,11 @@ async function createToken(user,removeToken,storeToken){
 
 // }
 
-async function sendTokenEmail(user,baseUrl,removeToken,storeToken,sendEmail){
+async function sendTokenEmail(user,baseUrl,findToken,removeToken,storeToken,sendEmail){
+    let tokenId;
     try{
         
-        let tokenId = await createToken(user,removeToken,storeToken);
+        tokenId = await createToken(user,findToken,removeToken,storeToken);
         
         if(tokenId){
 
@@ -234,6 +232,7 @@ async function authenticateUser(req,res,next){
             try{
                 const verifiedUser = await ensureVerifiedUser(req, user);
                 if(verifiedUser){
+                    const userLoggedIn = await loginUser(req,user);
                     await db.updateLastLogin(user.id);
                     res.redirect(`/community/profile/${user.id}`);
                 }else{
@@ -263,7 +262,7 @@ async function signUpUser(req,res,next){
         try {
             const user = await db.createUser(userInfo);
             const baseUrl = `${req.protocol}://${req.get('host')}/community/verification`;
-            const tokenSent = await sendTokenEmail(user,baseUrl,db.removeVerificationToken,db.storeVerificationToken,sendVerificationEmail);
+            const tokenSent = await sendTokenEmail(user,baseUrl,db.findVerificationToken,db.removeVerificationToken,db.storeVerificationToken,sendVerificationEmail);
             // const verifiedUser = await ensureVerifiedUser(req, user);
             // if(verifiedUser){
             //     res.redirect('/community/profile');
@@ -291,9 +290,9 @@ async function verifyUser(req, res, next){
         //Check token validity
         try{
             const validatedToken = await db.validateVerificationToken(tokenId);
-            await db.removeVerificationToken(validatedToken.userId);
-            const validatedUser = await db.verifyUser(validatedToken.userId);
-            const userLoggedIn = await loginUser(req,validatedUser);
+            const verifiedUser = await db.verifyUser(validatedToken.userId);
+            await db.removeVerificationToken(validatedToken.id);
+            const userLoggedIn = await loginUser(req,verifiedUser);
 
             res.locals.message = "Your account was validated successfully. Start exploring!";
             next();
@@ -309,11 +308,11 @@ async function verifyUser(req, res, next){
         }
     }else{
         if(req.query.emailSent){
-            res.locals.message = "Please check your email and follow the instructions to verify your account";
-            next();
+            res.locals.message = "Your account is not yet active. Please check your email and follow the instructions to verify your account";
         }else{
             res.redirect('/community/login');
         }
+        next();
     }
 }
 
@@ -329,8 +328,9 @@ async function sendResetToken(req, res, next){
             console.log('Sending reset password email');
             try{
                 const baseUrl = `${req.protocol}://${req.get('host')}/community/reset-password`;
-                const tokenSent = await sendTokenEmail(user,baseUrl,db.removeResetToken,db.storeResetToken,sendResetEmail);
+                const tokenSent = await sendTokenEmail(user,baseUrl,db.findResetToken,db.removeResetToken,db.storeResetToken,sendResetEmail);
                 if(tokenSent){
+                    console.log('redirecting');
                     res.redirect('/community/reset-password?emailSent=true');
                 }
             }catch(error){
@@ -382,11 +382,14 @@ async function sendResetToken(req, res, next){
 async function passwordResetAuthenticate(req,res,next){
     //Check token
     const tokenId = req.params.tokenId;
+    console.log(tokenId);
     if(tokenId){
+        console.log('validating token')
         //Validate token
         try{
             const validatedToken = await db.validateResetToken(tokenId);
             if(validatedToken){
+                console.log('token valid: ',tokenId)
                 res.locals.tokenId = tokenId;
             }
             res.locals.message = "Set your new password. We recommend using a password manager";
@@ -403,10 +406,16 @@ async function passwordResetAuthenticate(req,res,next){
         
     }else{
         if(req.query.emailSent){
+            console.log('Password reset requested');
             res.locals.message = "Please check your email and follow the instructions to securely reset your password";
-            next();
+        }else if(req.query.reset){
+            console.log('New password saved');
+            res.locals.message = "New password saved! Please log in to continue";
+        }else{
+            console.log('Bad request');
+            res.redirect('/community/login');
         }
-        res.redirect('/community/login')
+        next();
     }
 }
 
@@ -414,6 +423,7 @@ async function resetPassword(req,res, next){
     //Get password
     const password = req.body['user-password'];
     const tokenId = req.body['tokenId'];
+    console.log(tokenId);
     //Hash password
     bcrypt.hash(password, saltRounds, async (error, hashedPassword) => {
         if(error){
@@ -422,8 +432,8 @@ async function resetPassword(req,res, next){
         }
         try {
             const isReset = await db.resetPassword(tokenId, hashedPassword);
-            req.flash('success', 'New password saved! Please log in to continue');
-            res.redirect('/community/login');
+            await db.removeResetToken(tokenId);
+            res.redirect('/community/reset-password?reset=true');
         }catch(error){
             console.log("Error updating password: ", error);
             res.status(500).json({ error: 'Internal server error' });

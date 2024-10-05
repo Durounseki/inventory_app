@@ -57,6 +57,10 @@ const postResetPassword = [
 ]
 
 async function getSignup(req,res){
+    //Check if user is logged in
+    //If so
+        //Redirect to profile
+    //If not
     res.render("signup",{title: "Sign up", script: "signup.js"});
 }
 

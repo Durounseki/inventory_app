@@ -577,3 +577,130 @@ label:hover input ~ .custom-checkbox{
 label input:checked ~ .custom-checkbox{
     background-color: #b4d4ee;
 }
+
+.profile-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 1;
+    gap: 24px;
+    padding: 24px;
+}
+.user-banner, .user-intro, .user-stats, .user-actions{
+    display: flex;
+}
+
+.user-banner, .user-intro{
+    gap: 24px;
+    align-items: center;
+}
+
+.user-intro .name, .user-stats{
+    margin-top: 0;
+}
+
+.user-stats, .user-actions{
+    list-style-type: none;
+    gap: 12px;
+    padding: 0;
+}
+
+.user-action{
+    background-color: #202020;
+    border: solid 1px #505050;
+    padding: 8px 16px;
+    border-radius: 16px;
+    color: #fff5ff;
+    box-shadow: 2px 2px 2px #00000090;
+}
+
+.user-action:hover{
+    background-color: #b4d4ee;
+    color: #141414;
+}
+
+.card{
+    width: 400px;
+    height: 120px;
+    border-radius: 16px;
+    background-color: #202020;
+}
+
+.profile-picture{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background-color: #202020;
+}
+
+.user-details nav ul{
+    margin: 0;
+    display: flex;
+    gap: 16px;
+    padding: 0;
+    list-style-type: none;
+    padding: 0 32px;
+}
+
+.details-tab{
+    padding: 8px 32px;
+}
+
+.details-tab.active{
+    background-color: #ffa6db;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+}
+
+.details-tab.active a::before, .details-tab.active a::after{
+    --border-radius: 16px;
+    content: "";
+    position: absolute;
+    background-color: #141414;
+    bottom: 0;
+    width: var(--border-radius);
+    height: var(--border-radius);
+    border-radius: 50%;
+}
+
+.details-tab.active a::before{
+    left: calc(var(--border-radius) * -1);
+
+}
+.details-tab.active a::after{
+    right: calc(var(--border-radius) * -1);
+}
+
+.tab-filler{
+    opacity: 0;
+}
+
+.details-tab.active .tab-filler{
+    opacity: 1;
+    --border-radius: 16px;
+    position: absolute;
+    background-color: #ffa6db;
+    bottom: 0;
+    width: calc(var(--border-radius) * 0.5);
+    height: calc(var(--border-radius) * 0.5);
+}
+
+.tab-filler:first-child{
+    left: calc(var(--border-radius) * -0.5);
+}
+
+.tab-filler{
+    right: calc(var(--border-radius) * -0.5);
+}
+
+
+.details-content{
+    border: solid 1px #ffa6db;
+    border-radius: 16px;
+    padding: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 16px;
+    align-items: center;
+    justify-items: center;
+}

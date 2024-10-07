@@ -128,12 +128,10 @@ const navLinks = [
     {href: "/", text: "Home" },
     {href: "/events", text: "Events"},
     {href: "/community", text: "Community"},
-    {href: "/about", text: "About" },
-    {href: "/contact", text: "Contact"},
 ];
 
 //Github link
-const profileLink = {
+const gitHubLink = {
     href: "https://github.com/Durounseki",
     aria: "GitHub profile of Durounseki",
     faClass: "fa-brands fa-github",
@@ -143,7 +141,7 @@ const profileLink = {
 app.use( (req,res,next) => {
     res.locals.mainLogo = mainLogo;
     res.locals.navLinks = navLinks;
-    res.locals.profileLink = profileLink;
+    res.locals.gitHubLink = gitHubLink;
     next();
 });
 

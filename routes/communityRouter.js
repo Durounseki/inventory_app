@@ -21,6 +21,6 @@ communityRouter.get("/reset-password/:tokenId", communityController.getResetPass
 communityRouter.get("/reset-password", communityController.getResetPassword);
 communityRouter.post("/reset-password", communityController.postResetPassword);
 //Render profile page
-communityRouter.get("/profile/:userId", communityController.getProfile);
+communityRouter.get("/profile", communityController.getProfile);
 
 export default communityRouter;

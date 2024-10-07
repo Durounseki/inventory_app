@@ -8,5 +8,12 @@
                 <%= navLinks[i].text %>
             </a>
         <% } %>
+        <% if(locals.user) { %>
+            <div class="profile">
+                
+            </div>
+        <% }else{ %>
+            <a href="/profile">Sign In</a>
+        <% } %>
     </nav>
 </header>

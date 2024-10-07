@@ -78,7 +78,7 @@ const getVerification = [
 ]
 
 const getProfile = [
-    ensureAuthenticated,
+    // ensureAuthenticated,
     async (req,res,next) => {
         const user = req.user;
         res.render('profile', {title: "Profile", user: user, script: "profile.js"});

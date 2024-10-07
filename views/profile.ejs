@@ -7,21 +7,20 @@
         </figure>
         <div class="user-intro">
             <div class="user-greeting">
-                <h1 class="name">User Name</h1>
-                <p class="user-header">Let's dance</h2>
+                <h1 class="name"><%= user.name %></h1>
+                <p class="user-header"><%= user.greeting %></h2>
             </div>
             <div class="user-dashboard">
                 <ul class="user-stats">
-                    <li><a href="/profile/danced"><b>number</b> danced</a></li>
-                    <li><a href="/profile/want-to-dance"><b>number</b> want to dance</a></li>
+                    <li><a href="/community/profile/danced"><b><%= user.danced %></b> danced</a></li>
+                    <li><a href="/community/profile/want-to-dance"><b><%= user.wantToDance %></b> want to dance</a></li>
                 </ul>
                 <ul class="user-actions">
-                    <li class="user-action">
-                        <a href="/profile/edit">Edit profile</a>
-                    </li class="user-action">
-                    <li class="user-action">
-                        <a href="/profile/settings">Settings</a>
-                    </li class="user-action">
+                    <% for(let link of userActions) { %>
+                        <li class="user-action">
+                            <a href="<%= link.href %>"><%= link.name %></a>
+                        </li>
+                    <% } %>
                 </ul>
             </div>
         </div>
@@ -29,20 +28,17 @@
     <section class="user-details">
         <nav>
             <ul>
-                <li class="details-tab active">
-                    <div class="tab-filler"></div>
-                    <div class="tab-filler"></div>
-                    <a href="/profile/about">About</a>
-                </li>
-                <li class="details-tab">
-                    <div class="tab-filler"></div>
-                    <div class="tab-filler"></div>
-                    <a href="/profile/events">Events</a>
-                </li>
+                <% for(let link of userTabs) { %>
+                    <li class="<%= link.class %>" >
+                        <div class="tab-filler"></div>
+                        <div class="tab-filler"></div>
+                        <a href="<%= link.href %>"><%= link.name %></a>
+                    </li>
+                <% } %>
             </ul>
         </nav>
         <div class="details-content">
-            <% if(locals.events) { %>
+            <% if(events) { %>
                 <section class="details-events">
                     <div class="card"></div>
                     <div class="card"></div>
@@ -50,24 +46,30 @@
                     <div class="card"></div>
                     <div class="card"></div>
                     <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
+                    <% //for(let event of events){ %>
+                        <%- //include("./partials/event_card.ejs",{event: event}) %>
+                    <% //} %>
                 </section>
-            <% }else{ %>
+            <% }else if(about){ %>
                 <section class="details-about">
                     <h2>Biography</h2>
-                    <p>Hey there, this is Christian, the developer of this website. I hope you are enjoying your experience using The Dance Thread! Please don't hesitate to contact me to ask questions, make some suggestions, or simply say hello.<p/>
-                    <p>Let me tell you a little bit about me, and the story behind The Dance Thread. I'm originally from Mexico, and even though dancing is a big part of our culture, I never dared to learn while living there. I always thought I was too clumsy and felt insecure thinking people would laugh at me. My dance journey actually started when I moved to the UK for my studies. I learned the basics of salsa and bachata there and discovered how beautiful it is to connect with someone through dance. I was instantly hooked! But I still didn't feel confident enough to go out to socials, not to mention that I was extremely busy trying to finish my PhD in the middle of the pandemic back in 2020.</p>
-                
-                    <p>It wasn't until I came to Okinawa that I really started learning properly, first at Mamboki with Erik Rodriguez and later with Andres y Yuno at Haisai Latina. It took months to build the skills and confidence to ask people to dance. You know how hard it is to step onto the dance floor when you can only do the basic step! But, if you're like me, you also know how fun and addictive dancing can be. There's something magical about losing yourself in the music and movement, spending hours at a dance club without even noticing the time fly by.  You create these strong bonds with people simply by connecting on the dance floor, regardless of what language you speak. It's amazing how dance can create friendships anywhere in the world where there's a welcoming community.</p>
-                
-                    <p>And speaking of community, it was here in Okinawa that I met Yazmin, who sparked the idea for The Dance Thread. She envisioned an inclusive space for all dancers, which instantly resonated with how I feel about dancing. Coincidentally, at the time, I was looking to start a career in web development. It felt like the perfect partnership! We've been working hard for the last few months and have come up with this initial product. There's still tons of work to do, but we're working relentlessly to connect dancers from all around the world and spread our passion to many more.</p>
-                
-                    <p>We're working hard to bring you more features soon, including learning resources and opportunities to share your work as dancers, connecting both personally and professionally.</p>
-                    <p><b>Start exploring The Dance Thread today!</b></p>
+                    <pre>
+                        <%= user.bio %>
+                    </pre>
+                </section>
+            <% }else if(community){ %>
+                <section class="details-dancers">
+                    <div class="card"></div>
+                    <div class="card"></div>
+                    <div class="card"></div>
+                    <div class="card"></div>
+                    <div class="card"></div>
+                    <div class="card"></div>
+                    <% //for(let user of community){ %>
+                        <%- //include("./partials/user_card.ejs",{user: user}) %>
+                    <% //} %>
                 </section>
             <% } %>
-            
         </div>
     </section>
 </div>

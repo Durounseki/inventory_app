@@ -18,6 +18,7 @@ header{
     position: sticky;
     background-color: #14141490;
     top: 0;
+    z-index: 1;
 }
 
 nav{
@@ -703,4 +704,10 @@ label input:checked ~ .custom-checkbox{
     gap: 16px;
     align-items: center;
     justify-items: center;
+}
+
+pre{
+    font-family: "Inter", sans-serif;
+    white-space: pre-wrap;
+
 }

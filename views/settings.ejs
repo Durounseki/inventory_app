@@ -1,0 +1,115 @@
+<% extend('layout') %>
+
+<div class="profile-container">
+    <section class="user-banner">
+        <figure class="profile-picture">
+            <img/>
+        </figure>
+        <div class="user-intro">
+            <div class="user-greeting">
+                <h1 class="name"><%= user.name %></h1>
+                <p class="user-header"><%= user.greeting %></h2>
+            </div>
+            <div class="user-dashboard">
+                <ul class="user-stats">
+                    <li><a href="/community/profile/danced"><b><%= user.danced %></b> danced</a></li>
+                    <li><a href="/community/profile/want-to-dance"><b><%= user.wantToDance %></b> want to dance</a></li>
+                </ul>
+                <ul class="user-actions">
+                    <% for(let link of userActions) { %>
+                        <li class="user-action">
+                            <a href="<%= link.url %>"><%= link.name %></a>
+                        </li>
+                    <% } %>
+                </ul>
+            </div>
+        </div>
+    </section>
+    <section class="user-details">
+        <nav>
+            <ul>
+                <% for(let link of userTabs) { %>
+                    <li class="<%= link.class %>" >
+                        <div class="tab-filler"></div>
+                        <div class="tab-filler"></div>
+                        <a href="<%= link.href %>"><%= link.name %></a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+        <div class="details-content">
+            <form action="/community/profile/edit">
+                
+                <label for="user-username">Username</label>
+                <input type="text" name="user-username" id="user-username" value="<%= user.username%>">
+                <label for="user-name">Name</label>
+                <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value=" <%= user.name %> "<% } %> placeholder="Your name" >
+
+                <div class="form-separator"></div>
+                <h3 class="user-form-section-header">Dance Styles</h2>
+
+                <div class="style-checkbox-container">
+                    <label for="salsa">
+                        <input class="user-style-checkbox" type="checkbox" id="salsa" name="user-style" value="salsa" <% if(user.style.includes("Salsa")) { %> checked <% } %>>
+                        <div class="custom-checkbox"></div>
+                        Salsa
+                    </label>
+                    <label for="bachata">
+                        <input class="user-style-checkbox" type="checkbox" id="bachata" name="user-style" value="bachata" <% if(user.style.includes("Bachata")) { %> checked <% } %>>
+                        <div class="custom-checkbox"></div>
+                        Bachata
+                    </label>
+                    <label for="kizomba">
+                        <input class="user-style-checkbox" type="checkbox" id="kizomba" name="user-style" value="kizomba" <% if(user.style.includes("Kizomba")) { %> checked <% } %>>
+                        <div class="custom-checkbox"></div>
+                        Kizomba
+                    </label>
+                    <label for="zouk">
+                        <input class="user-style-checkbox" type="checkbox" id="zouk" name="user-style" value="zouk" <% if(user.style.includes("Zouk")) { %> checked <% } %>>
+                        <div class="custom-checkbox"></div>
+                        Zouk
+                    </label>
+                    <% for(item of user.style.filter(item => !["Salsa","Bachata","Kizomba","Zouk"].includes(item))) { %>
+                        <label for="<%= item.toLowerCase %>">
+                            <input class="user-style-checkbox" type="checkbox" id="<%= item.toLowerCase %>" name="user-style" value="<%= item.toLowerCase %>" checked>
+                            <div class="custom-checkbox"></div>
+                            <%= item %>
+                        </label>
+                    <% } %> 
+                </div>
+                <label for="other">Other</label>
+                <input type="text" id="other" name="user-style">
+
+                <div class="form-separator"></div>
+                <h3 class="user-form-section-header">About</h2>
+
+                <label for="user-nationality">Nationality</label>
+                <input type="select" name="user-nationality" id="user-nationality" value="<%= user.nationality%>">
+                <label for="user-location">Location</label>
+                <input type="select" name="user-location" id="user-location" value="<%= user.country%>">
+                <label for="user-bio">Bio</label>
+                <textarea id="user-bio" name="user-bio" placeholder="Share your dance journey!"><%= user.bio %></textarea>
+
+                <div class="form-separator"></div>
+                <h3 class="user-form-section-header">Social Media</h2>
+
+                <div class="user-sns-container">
+                    <% for(sns of user.sns) { %>
+                        <div class="user-sns-group">
+                            <select name="user-sns-platform">
+                                <option value="website" <% if(sns.name === "website" ) { %> selected <% } %>>Website</option>
+                                <option value="facebook" <% if(sns.name === "facebook" ) { %> selected <% } %>>Facebook</option>
+                                <option value="instagram" <% if(sns.name === "instagram" ) { %> selected <% } %>>Instagram</option>
+                                <option value="youtube" <% if(sns.name === "youtube" ) { %> selected <% } %>>Youtube</option>
+                            </select>
+                            <input type="text" name="user-sns-url" value="<%= sns.url %>" >
+                            <button type="button" class="remove-sns">Remove</button>
+                        </div>
+                    <% } %>
+                </div>
+                <button type="button" id="user-add-sns">Add Link</button>
+
+            </form>
+        </div>
+    </section>
+</div>

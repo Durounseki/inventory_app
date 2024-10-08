@@ -96,6 +96,17 @@ const ownUserActions = [
     }
 ]
 
+const editActions = [
+    {
+        name: "New Picture",
+        url: "/community/profile/edit/picture"
+    },
+    {
+        name: "Delete Picture",
+        url: "/community/profile/edit/picture"
+    }
+]
+
 const otherUserActions = [
     {
         name: "Danced",
@@ -129,10 +140,25 @@ const othersInfoTabs = [
     }
 ]
 
+const editTabs = [
+    {
+        name: "Edit Profile",
+        href: "/community/profile/edit"
+    },
+    {
+        name: "Settings",
+        href: "/community/profile/settings"
+    }
+]
+
 const authorized = true;
 
 const user = {
+    username: "durounseki",
+    email: "durounseki@thedancethread.com",
     name: "Christian",
+    nationality: "Mexico",
+    location: "Japan",
     greeting: "Hey! I'm the developer of the dance thread!",
     danced: 10,
     wantToDance: 3000,
@@ -148,7 +174,15 @@ const user = {
         We're working hard to bring you more features soon, including learning resources and opportunities to share your work as dancers, connecting both personally and professionally.
         
         Start exploring The Dance Thread today!
-    `
+    `,
+    style: ['Salsa', 'Bachata', 'Cumbia'],
+    sns: [{
+        name: "instagram",
+        url: "https://www.instagram.com/durounseki/profilecard/?igsh=MWdvd3RlaXNxbnBlNw==",
+        faClass: "fa-brands fa-instagram"
+    }]
+
+
 }
 
 const getProfileAbout = [ async(req,res,next) => {
@@ -189,13 +223,25 @@ const getProfileEdit = [ async(req,res,next) => {
     res.render('settings', {
         title: 'Edit Profile',
         user: user,
+        userActions: editActions,
+        userTabs: editTabs.map(tab => 
+            tab.name === "Edit Profile"
+            ? {...tab, class: "details-tab active"}
+            : {...tab, class: "details-tab"}
+        )
     })
 }]
 
 const getProfileSettings = [ async(req,res,next) => {
     res.render('settings', {
         title: 'Settings',
-        user: user
+        user: user,
+        userActions: editActions,
+        userTabs: editTabs.map(tab => 
+            tab.name === "Settings"
+            ? {...tab, class: "details-tab active"}
+            : {...tab, class: "details-tab"}
+        )
     })
 }]
 

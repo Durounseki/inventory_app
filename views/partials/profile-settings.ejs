@@ -1,0 +1,36 @@
+<form action="/community/profile/settings"></form>
+    
+    <h3 class="form-section-header">General</h2>
+    
+    <label for="user-username">Username</label>
+    <input type="text" name="user-username" id="user-username" value="<%= user.username%>">
+    <label for="user-email">Username</label>
+    <input type="text" name="user-email" id="user-email" value="<%= user.email%>">
+    
+    <h3 class="form-section-header">Privacy and Visibility</h2>
+
+    <label for="user-network-visibility">Dance network</label>
+    <select name="user-network-visibility">
+        <option value="anyone" <% if(user.preferences.visibility.network === "anyone" ) { %> selected <% } %>>Anyone</option>
+        <option value="dancedOnly" <% if(user.preferences.visibility.network === "dancedOnly" ) { %> selected <% } %>>Only people I have danced</option>
+        <option value="wantToDance" <% if(user.preferences.visibility.network === "wantToDance" ) { %> selected <% } %>>People I have danced with and people I want to dance with</option>
+        <option value="me" <% if(user.preferences.visibility.network === "me") { %> selected <% } %>>Only me</option>
+    </select>
+
+    <label for="user-network-visibility">My events</label>
+    <select name="user-network-visibility">
+        <option value="anyone" <% if(user.preferences.visibility.events === "anyone" ) { %> selected <% } %>>Anyone</option>
+        <option value="dancedOnly" <% if(user.preferences.visibility.events === "dancedOnly" ) { %> selected <% } %>>Only people I have danced</option>
+        <option value="wantToDance" <% if(user.preferences.visibility.events === "wantToDance" ) { %> selected <% } %>>People I have danced with and people I want to dance with</option>
+        <option value="me" <% if(user.preferences.visibility.events === "me") { %> selected <% } %>>Only me</option>
+    </select>
+
+    <div class="form-separator"></div>
+    <h3 class="user-form-section-header">Danger zone</h2>
+
+    <form id="delete-account" action="/community/profile/delete" method="post">
+        <button type="submit">Delete Account</button>
+    </form>
+    
+
+</form>

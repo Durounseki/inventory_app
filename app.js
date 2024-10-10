@@ -85,6 +85,14 @@ passport.deserializeUser(async(id,done)=>{
     }
 })
 
+//Test data
+import {users, events} from './db/test_data.js'
+app.use((req,res,next) => {
+    req.app.locals.users = users;
+    req.app.locals.events = events;
+    req.app.locals.currentUser = users[0];
+    next();
+});
 
 // Routers
 import indexRouter from "./routes/indexRouter.js"; // Assuming .js extension

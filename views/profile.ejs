@@ -40,9 +40,12 @@
         <div class="details-content">
             <% if(info === "events") { %>
                 <section class="details-events">
-                
-                    <% for(let event of events){ %>
-                        <%- include("./partials/event_card.ejs",{event: event}) %>
+                    <% if(events.length > 0){ %>
+                        <% for(let event of events){ %>
+                            <%- include("./partials/event_card.ejs",{event: event}) %>
+                        <% } %>
+                    <% }else{ %>
+                        <h2><%= user.name %>'s events are private</h2>
                     <% } %>
                 </section>
             <% }else if(info === "about"){ %>

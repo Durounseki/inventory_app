@@ -38,8 +38,8 @@ const users = [
         }],
         preferences: {
             visibility: {
-                network: "anyone",
-                events: "anyone"
+                network: "public",
+                events: "public"
             }
         },
         following: [],
@@ -79,8 +79,8 @@ const users = [
         ],
         preferences: {
           visibility: {
-            network: "dancedOnly",
-            events: "dancedOnly"
+            network: "private",
+            events: "private"
           }
         },
         following: [],

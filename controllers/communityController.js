@@ -157,28 +157,18 @@ const editTabs = (username) => [
 ]
 
 function canView(preference, currentUser, user){
-    switch(preference){
-        case "me":
-            return false;
-            break;
-        case "danced":
-            if(user.danced.includes(currentUser.username)){
-                return true;
-            }else{
-                return false;
-            }
-            break;
-        case "wantToDance":
-            if(user.danced.includes(currentUser.username) || user.wantToDance.includes(currentUser.username)){
-                return true;
-            }else{
-                return false;
-            }
-            break;
-        case "anyone":
-            return true;
-            break;
 
+    switch(preference){
+        case "public":
+            return true;
+            break; 
+        case "private":
+            if(user.followedBy.includes(currentUser.username) || user.following.includes(currentUser.username)){
+                return true;
+            }else{
+                return false;
+            }
+            break;
     }
 }
 
@@ -187,10 +177,8 @@ const getProfileAbout = [ async(req,res,next) => {
     const profileUsername = req.params.username;
     const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
     const currentUser = req.app.locals.currentUser;
-    console.log(user.username);
     let userActions;
-
-    let mode = "view";
+    const mode = "view";
     if(user === currentUser){
         userActions = ownUserActions[mode](currentUser.username)
     }else{
@@ -210,10 +198,27 @@ const getProfileAbout = [ async(req,res,next) => {
         info: "about",
     })
 }]
+
 const getProfileEvents = [ async(req,res,next) => {
 
-    const {user, currentUser, userActions} = checkUser(req);
-    const events = req.app.locals.events.filter(item => user.events.includes(item.id));
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    let userActions;
+    let events;
+    const mode = "view";
+    if(user === currentUser){
+        userActions = ownUserActions[mode](currentUser.username);
+        events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
+    }else{
+        console.log(user);
+        userActions = otherUserActions(user.username)
+        if(canView(user.preferences.visibility.events,currentUser,user)){
+            events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
+        }else{
+            events = req.app.locals.events.filter(item => user.eventsCreated.includes(item.id))
+        }
+    }  
 
     res.render('profile', {
         title: 'Profile',
@@ -221,7 +226,7 @@ const getProfileEvents = [ async(req,res,next) => {
         currentUser: currentUser,
         userActions: userActions,
         events: events,
-        userTabs: ownInfoTabs.map(tab => 
+        userTabs: infoTabs(user.username).map(tab => 
             tab.name === "Events"
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}

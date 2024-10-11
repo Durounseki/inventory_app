@@ -10,20 +10,10 @@
     <h3 class="form-section-header">Privacy and Visibility</h2>
 
     <label for="user-network-visibility">Dance network</label>
-    <select name="user-network-visibility">
-        <option value="anyone" <% if(user.preferences.visibility.network === "anyone" ) { %> selected <% } %>>Anyone</option>
-        <option value="dancedOnly" <% if(user.preferences.visibility.network === "dancedOnly" ) { %> selected <% } %>>Only people I have danced</option>
-        <option value="wantToDance" <% if(user.preferences.visibility.network === "wantToDance" ) { %> selected <% } %>>People I have danced with and people I want to dance with</option>
-        <option value="me" <% if(user.preferences.visibility.network === "me") { %> selected <% } %>>Only me</option>
-    </select>
+    <input type="range" name="user-network-visibility" id="user-network-visibility" min="0" max="1" <% if(user.preferences.visibility.network === "public" ) { %> value=0 <% }else{ %> value=1 <% } %>/>
 
-    <label for="user-network-visibility">My events</label>
-    <select name="user-network-visibility">
-        <option value="anyone" <% if(user.preferences.visibility.events === "anyone" ) { %> selected <% } %>>Anyone</option>
-        <option value="dancedOnly" <% if(user.preferences.visibility.events === "dancedOnly" ) { %> selected <% } %>>Only people I have danced</option>
-        <option value="wantToDance" <% if(user.preferences.visibility.events === "wantToDance" ) { %> selected <% } %>>People I have danced with and people I want to dance with</option>
-        <option value="me" <% if(user.preferences.visibility.events === "me") { %> selected <% } %>>Only me</option>
-    </select>
+    <label for="user-events-visibility">My events</label>
+    <input type="range" name="user-events-visibility" id="user-events-visibility" min="0" max="1" <% if(user.preferences.visibility.events === "public" ) { %> value=0 <% }else{ %> value=1 <% } %>/>
 
     <div class="form-separator"></div>
     <h3 class="user-form-section-header">Danger zone</h2>

@@ -85,132 +85,159 @@ const getVerification = [
 //     }
 // ]
 
-const ownUserActions = [
-    {
-        name: "Edit Profile",
-        href: "/community/profile/edit"
-    },
-    {
-        name: "Settings",
-        href: "/community/profile/settings"
-    }
-]
+const ownUserActions = {
+    view: (username) => 
+    [
+        {
+            name: "Edit Profile",
+            href: `community/${username}/edit`
+        },
+        {
+            name: "Settings",
+            href: `community/${username}/settings`
+        }
+    ],
+    edit: (username) => 
+    [
+        {
+            name: "New Picture",
+            href: `community/${username}/picture`
+        },
+        {
+            name: "Delete Picture",
+            href: `community/${username}/picture`
+        }
+    ]
+}
 
-const editActions = [
+const otherUserActions = (username) => [
     {
-        name: "New Picture",
-        url: "/community/profile/edit/picture"
+        name: "Follow",
+        href: `community/${username}/follow`
     },
-    {
-        name: "Delete Picture",
-        url: "/community/profile/edit/picture"
-    }
-]
-
-const otherUserActions = [
     {
         name: "Danced",
-        href: "/community/profile/danced"
+        href: `community/${username}/danced`
     },
     {
         name: "Want to Dance",
-        href: "/community/profile/want-to-dance"
+        href: `community/${username}/want-to-dance`
     }
 ]
 
-const ownInfoTabs = [
+
+const infoTabs = (username) => [
     {
         name: "About",
-        href: "/community/profile/about"
+        href: `/community/${username}`
     },
     {
         name: "Events",
-        href: "/community/profile/events"
-    }
-]
-
-const othersInfoTabs = [
+        href: `/community/${username}/events`
+    },
     {
         name: "Danced",
-        href: "/community/profile/danced"
+        href: `/community/${username}/danced`
     },
     {
         name: "Want to Dance",
-        href: "/community/profile/want-to-dance"
+        href: `/community/${username}/want-to-dance`
     }
 ]
 
-const editTabs = [
+const editTabs = (username) => [
     {
         name: "Edit Profile",
-        href: "/community/profile/edit"
+        href: `/community/${username}/edit`
     },
     {
         name: "Settings",
-        href: "/community/profile/settings"
+        href: `/community/${username}/settings`
     }
 ]
 
-function isAuthorized(req){
-    const profileUsername = req.params.username;
-    const currentUser = req.app.locals.currentUser;
-    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];
-    if(user === currentUser){
-        return {user: user, currentUser: currentUser, authorized: true};
+function canView(preference, currentUser, user){
+    switch(preference){
+        case "me":
+            return false;
+            break;
+        case "danced":
+            if(user.danced.includes(currentUser.username)){
+                return true;
+            }else{
+                return false;
+            }
+            break;
+        case "wantToDance":
+            if(user.danced.includes(currentUser.username) || user.wantToDance.includes(currentUser.username)){
+                return true;
+            }else{
+                return false;
+            }
+            break;
+        case "anyone":
+            return true;
+            break;
+
     }
-    return {user: user, currentUser: currentUser, authorized: false};
 }
 
 const getProfileAbout = [ async(req,res,next) => {
     
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    console.log(user.username);
+    let userActions;
 
-    console.log(user);
+    let mode = "view";
+    if(user === currentUser){
+        userActions = ownUserActions[mode](currentUser.username)
+    }else{
+        userActions = otherUserActions(user.username)
+    }
+
     res.render('profile', {
         title: 'Profile',
         user: user,
         currentUser: currentUser,
-        authorized: authorized,
-        userActions: authorized ? ownUserActions : otherUserActions,
-        userTabs: ownInfoTabs.map(tab => 
+        userActions: userActions,
+        userTabs: infoTabs(user.username).map(tab => 
             tab.name === "About"
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        about: true,
-        events: false,
-        community: false  
+        info: "about",
     })
 }]
 const getProfileEvents = [ async(req,res,next) => {
 
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const {user, currentUser, userActions} = checkUser(req);
+    const events = req.app.locals.events.filter(item => user.events.includes(item.id));
 
     res.render('profile', {
         title: 'Profile',
         user: user,
         currentUser: currentUser,
-        authorized: authorized,
-        userActions: authorized ? ownUserActions : otherUserActions,
+        userActions: userActions,
+        events: events,
         userTabs: ownInfoTabs.map(tab => 
             tab.name === "Events"
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        about: false,
-        events: true,
-        community: false
+        info: "events"
     })
 }]
 
 const getProfileEdit = [ async(req,res,next) => {
     
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const {user, currentUser, userActions} = checkUser(req);
 
     res.render('settings', {
         title: 'Edit Profile',
         user: user,
-        authorized: authorized,
+        currentUser: currentUser,
         userActions: editActions,
         userTabs: editTabs.map(tab => 
             tab.name === "Edit Profile"
@@ -225,7 +252,7 @@ const getProfileEdit = [ async(req,res,next) => {
 
 const getProfileSettings = [ async(req,res,next) => {
 
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const {user, currentUser, userActions} = checkUser(req);
 
     res.render('settings', {
         title: 'Settings',

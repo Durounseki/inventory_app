@@ -12,8 +12,8 @@
             </div>
             <div class="user-dashboard">
                 <ul class="user-stats">
-                    <li><a href="/community/profile/danced"><b><%= user.danced %></b> danced</a></li>
-                    <li><a href="/community/profile/want-to-dance"><b><%= user.wantToDance %></b> want to dance</a></li>
+                    <li><a href="./following"><b><%= user.totalFollowing %></b> following</a></li>
+                    <li><a href="./followers"><b><%= user.totalFollowedBy %></b> followers</a></li>
                 </ul>
                 <ul class="user-actions">
                     <% for(let link of userActions) { %>
@@ -38,26 +38,21 @@
             </ul>
         </nav>
         <div class="details-content">
-            <% if(events) { %>
+            <% if(info === "events") { %>
                 <section class="details-events">
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <% //for(let event of events){ %>
-                        <%- //include("./partials/event_card.ejs",{event: event}) %>
-                    <% //} %>
+                
+                    <% for(let event of events){ %>
+                        <%- include("./partials/event_card.ejs",{event: event}) %>
+                    <% } %>
                 </section>
-            <% }else if(about){ %>
+            <% }else if(info === "about"){ %>
                 <section class="details-about">
                     <h2>Biography</h2>
                     <pre>
                         <%= user.bio %>
                     </pre>
                 </section>
-            <% }else if(community){ %>
+            <% }else if(info === "community"){ %>
                 <section class="details-dancers">
                     <div class="card"></div>
                     <div class="card"></div>

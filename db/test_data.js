@@ -17,8 +17,6 @@ const users = [
         nationality: "Mexico",
         location: "Japan",
         greeting: "Hey! I'm the developer of the dance thread!",
-        danced: 10,
-        wantToDance: 3000,
         bio: `
         Hey there, this is Christian, the developer of this website. I hope you are enjoying your experience using The Dance Thread! Please don't hesitate to contact me to ask questions, make some suggestions, or simply say hello.
             
@@ -44,8 +42,16 @@ const users = [
                 events: "anyone"
             }
         },
+        following: [],
+        totalFollowing: 0,
+        followedBy: [],
+        totalFollowedBy: 0,
         danced: [],
-        wantToDance: []
+        totalDanced: 0,
+        wantToDance: [],
+        totalWantToDance: 0,
+        eventsGoing: [1,2,3,4],
+        eventsCreated: [2]
     },
     {
         username: "dancingqueen",
@@ -62,8 +68,6 @@ const users = [
         nationality: "Spain",
         location: "Colombia",
         greeting: "¡Hola! Let's dance!",
-        danced: 500,
-        wantToDance: 100,
         bio: "Passionate salsa and bachata dancer traveling the world! Always looking for new dance partners and exploring different dance styles.  Let's connect and dance!",
         style: ["Salsa", "Bachata", "Kizomba"],
         sns: [
@@ -79,8 +83,16 @@ const users = [
             events: "dancedOnly"
           }
         },
+        following: [],
+        totalFollowing: 0,
+        followedBy: [],
+        totalFollowedBy: 0,
         danced: [],
-        wantToDance: []
+        totalDanced: 0,
+        wantToDance: [],
+        totalWantToDance: 0,
+        eventsGoing: [3,4,5,6],
+        eventsCreated: []
       },
       {
         username: "groovyguru",
@@ -97,8 +109,6 @@ const users = [
         nationality: "Brazil",
         location: "United States",
         greeting: "Hey! I love zouk and West Coast Swing!",
-        danced: 250,
-        wantToDance: 250,
         bio: "Zouk and West Coast Swing enthusiast!  I love the connection and flow of these dances. Always up for learning new moves and meeting new people on the dance floor.",
         style: ["Zouk", "West Coast Swing", "Other"],
         sns: [
@@ -119,8 +129,16 @@ const users = [
             events: "anyone"
           }
         },
+        following: [],
+        totalFollowing: 0,
+        followedBy: [],
+        totalFollowedBy: 0,
         danced: [],
-        wantToDance: []
+        totalDanced: 0,
+        wantToDance: [],
+        totalWantToDance: 0,
+        eventsGoing: [1,5,6],
+        eventsCreated: [1]
       },
       {
         username: "bachaterolover",
@@ -137,8 +155,6 @@ const users = [
         nationality: "Dominican Republic",
         location: "Dominican Republic",
         greeting: "Hi! Bachata is my passion!",
-        danced: 1000,
-        wantToDance: 500,
         bio: "Bachata is life! I love the music, the connection, and the feeling of this dance.  I'm always happy to share my passion with others. Let's dance bachata!",
         style: ["Bachata", "Salsa"],
         sns: [],
@@ -148,21 +164,30 @@ const users = [
             events: "danced"
           }
         },
+        following: [],
+        totalFollowing: 0,
+        followedBy: [],
+        totalFollowedBy: 0,
         danced: [],
+        totalDanced: 0,
         wantToDance: [],
-        eventsCreated: [],
-        eventsGoing: []
+        totalWantToDance: 0,
+        eventsGoing: [3,4,5,6],
+        eventsCreated: [1]
       }
 ]
 
 const events = [
     {
+      id: 1,
       name: "Saigon Latin Dance Festival",
       date: "2024-12-06",
-      venue: {
-        name: "Saigon Prince Hotel",
-        url: "https://www.google.com/maps/place/Saigon+Prince+Hotel+(Formerly+Duxton+Hotel+Saigon)/@10.7718114,106.7004351,14.78z/data=!4m9!3m8!1s0x31752f46cbafffff:0xbbeda6738fc69a7c!5m2!4m1!1i2!8m2!3d10.7728099!4d106.7040688!16s%2Fg%2F11j00snk_w?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
-      },
+      venue: [
+        {
+          name: "Saigon Prince Hotel",
+          url: "https://www.google.com/maps/place/Saigon+Prince+Hotel+(Formerly+Duxton+Hotel+Saigon)/@10.7718114,106.7004351,14.78z/data=!4m9!3m8!1s0x31752f46cbafffff:0xbbeda6738fc69a7c!5m2!4m1!1i2!8m2!3d10.7728099!4d106.7040688!16s%2Fg%2F11j00snk_w?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
+        }
+      ],
       country: "Vietnam",
       sns: [
         {
@@ -176,15 +201,22 @@ const events = [
           faClass: "fa-brands fa-square-facebook"
         },
       ],
-      dancers: ["dancingqueen","durounseki"]
+      dancers: ["dancingqueen","durounseki"],
+      flyer: {
+        alt: "Saigon Latin Dance Festival",
+        src: "/uploads/1725115796305-saigonLatinFestival.jpg"
+      }
     },
     {
+      id: 2,
       name: "Japan Korea Bachata Connection 2024",
       date: "2024-11-01",
-      venue: {
-        name: "Studio UMAYADO",
-        venue: "https://maps.app.goo.gl/Ukfd7VXg5WkrUwmM6?g_st=com.google.maps.preview.copy",
-      },
+      venue: [
+        {
+          name: "Studio UMAYADO",
+          venue: "https://maps.app.goo.gl/Ukfd7VXg5WkrUwmM6?g_st=com.google.maps.preview.copy",
+        }
+      ],
       country: "Japan",
       sns: [
         {
@@ -198,15 +230,22 @@ const events = [
           faClass: "fa-brands fa-instagram"
         },
       ],
-      dancers: ["bachaterolover"]
+      dancers: ["bachaterolover"],
+      flyer: {
+        alt: "JKBC",
+        src: "/uploads/1725113037530-IMG_7518.JPG"
+      }
     },
     {
+      id: 3,
       name: "Taiwan Salsa Carnival 2024",
       date: "2024-11-22",
-      venue: {
-        name: "NUZONE",
-        venue: "https://www.google.com/maps/place/NUZONE+%E5%B1%95%E6%BC%94%E7%A9%BA%E9%96%93/@25.04424,121.538495,15z/data=!4m6!3m5!1s0x3442ab63008ad2d1:0x2c071fd16d1e5095!8m2!3d25.04424!4d121.538495!16s%2Fg%2F11fl43q3jx?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
-      },
+      venue: [
+        {
+          name: "NUZONE",
+          venue: "https://www.google.com/maps/place/NUZONE+%E5%B1%95%E6%BC%94%E7%A9%BA%E9%96%93/@25.04424,121.538495,15z/data=!4m6!3m5!1s0x3442ab63008ad2d1:0x2c071fd16d1e5095!8m2!3d25.04424!4d121.538495!16s%2Fg%2F11fl43q3jx?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
+        }
+      ],
       country: "Taiwan",
       sns: [
         {
@@ -220,14 +259,22 @@ const events = [
           faClass: "fa-brands fa-square-facebook"
         },
       ],
+      dancers: ["durounseki", "groovyguru"],
+      flyer: {
+        alt: "TSC2024",
+        src: "/uploads/1725114210437-taiwanSalsaCarnival.jpg"
+      }
     },
     {
+      id: 4,
       name: "Alonso & Noelia: Linking Japan Bachata Festival",
       date: "2024-11-15",
-      venue: {
-        name: "Studio M",
-        url: "https://www.google.com/maps/place/%E6%B1%A0%E8%A2%8B%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%BF%E3%83%AB%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%AA+Studio+M+Ikebukuro+Tokyo/@35.7338274,139.7088884,15z/data=!4m6!3m5!1s0x60188dd9f365f057:0x8cb260fa56ed44e6!8m2!3d35.7338274!4d139.7088884!16s%2Fg%2F11frt6rsqv?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
-      },
+      venue: [
+        {
+          name: "Studio M",
+          url: "https://www.google.com/maps/place/%E6%B1%A0%E8%A2%8B%E3%83%AC%E3%83%B3%E3%82%BF%E3%83%BF%E3%83%AB%E3%82%B9%E3%82%BF%E3%82%B8%E3%82%AA+Studio+M+Ikebukuro+Tokyo/@35.7338274,139.7088884,15z/data=!4m6!3m5!1s0x60188dd9f365f057:0x8cb260fa56ed44e6!8m2!3d35.7338274!4d139.7088884!16s%2Fg%2F11frt6rsqv?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
+        }
+      ],
       country: "Japan",
       sns: [
         {
@@ -241,14 +288,22 @@ const events = [
           faClass: "fa-brands fa-instagram"
         },
       ],
+      dancers: [],
+      flyer: {
+        alt: "LinkingAYL",
+        src: "/uploads/1725092971546-linkingBachata.jpeg"
+      }
     },
     {
+      id: 5,
       name: "Bachata Island Vibes: Haisai Latina 9th Anniversary",
       date: "2024-10-12",
-      venue: {
-        name: "Bailando",
-        url: "https://maps.app.goo.gl/oz6ioaiKnrgSrFmG7?g_st=com.google.maps.preview.copy",
-      },
+      venue: [
+        {
+          name: "Bailando",
+          url: "https://maps.app.goo.gl/oz6ioaiKnrgSrFmG7?g_st=com.google.maps.preview.copy",
+        }
+      ],
       country: "Japan",
       sns: [
         {
@@ -257,14 +312,22 @@ const events = [
           faClass: "fa-brands fa-square-facebook"
         },
       ],
+      dancers: ["durounseki","dancingqueen"],
+      flyer: {
+        alt: "Haisai",
+        src: "/uploads/1725111293862-453724075_935543005044002_8987328550440613224_n.jpg"
+      }
     },
     {
+      id: 6,
       name: "Vietnam Latin Xperience 2024",
       date: "2024-10-04",
-      venue: {
-        name: "Phuong Nguyen Restaurant Building",
-        url: "https://www.google.com/maps/place/Phuong+Nguyen+Restaurant/@21.070976,105.8224295,19.74z/data=!4m6!3m5!1s0x3135aaf0d68329f3:0xec83fa3eb422fba8!8m2!3d21.0708775!4d105.8224349!16s%2Fg%2F11b7tgrm1b?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
-      },
+      venue: [
+        {
+          name: "Phuong Nguyen Restaurant Building",
+          url: "https://www.google.com/maps/place/Phuong+Nguyen+Restaurant/@21.070976,105.8224295,19.74z/data=!4m6!3m5!1s0x3135aaf0d68329f3:0xec83fa3eb422fba8!8m2!3d21.0708775!4d105.8224349!16s%2Fg%2F11b7tgrm1b?entry=ttu&g_ep=EgoyMDI0MDgyOC4wIKXMDSoASAFQAw%3D%3D",
+        }
+      ],
       country: "Vietnam",
       sns: [
         {
@@ -273,14 +336,21 @@ const events = [
           faClass: "fa-solid fa-globe"
         },
       ],
+      dancers: ["groovyguru", "bachaterolover"],
+      flyer: {
+        alt: "VLX2024",
+        src: "/uploads/1725115107290-vlx.jpeg"
+      }
     },
     {
       name: "Salsa Bachata Temptation Singapore",
       date: "2024-08-09",
-      venue: {
-        name: "MAX Atria Garnet",
-        url: "https://www.google.com/maps/place/Singapore+EXPO+Meeting+Rooms/@1.3332953,103.9567683,15z/data=!4m6!3m5!1s0x31da3d29b4a86847:0x62aaab711af2fcdf!8m2!3d1.3332953!4d103.9567683!16s%2Fg%2F11btww6m0q?entry=ttu"
-      },
+      venue: [
+        {
+          name: "MAX Atria Garnet",
+          url: "https://www.google.com/maps/place/Singapore+EXPO+Meeting+Rooms/@1.3332953,103.9567683,15z/data=!4m6!3m5!1s0x31da3d29b4a86847:0x62aaab711af2fcdf!8m2!3d1.3332953!4d103.9567683!16s%2Fg%2F11btww6m0q?entry=ttu"
+        }
+      ],
       country: "Singapore",
       sns: [
         {
@@ -304,6 +374,11 @@ const events = [
           faClass: "fa-brands fa-youtube"
         },
       ],
+      dancers: ["durounseki","dancingqueen","groovyguru","bachaterolover"],
+      flyer: {
+        alt: "SBTS2024",
+        src: "/uploads/1726652586379-sbts.png"
+      }
     },
   ];
 

@@ -2,9 +2,11 @@
 
 <div class="profile-container">
     <section class="user-banner">
-        <figure class="profile-picture">
-            <img/>
-        </figure>
+        <a href="/community/profile">
+            <figure class="profile-picture">
+                <%- user.avatar %>
+            </figure>
+        </a>
         <div class="user-intro">
             <div class="user-greeting">
                 <h1 class="name"><%= user.name %></h1>
@@ -12,8 +14,8 @@
             </div>
             <div class="user-dashboard">
                 <ul class="user-stats">
-                    <li><a href="/community/profile/danced"><b><%= user.danced %></b> danced</a></li>
-                    <li><a href="/community/profile/want-to-dance"><b><%= user.wantToDance %></b> want to dance</a></li>
+                    <li><a href="/community/profile/danced"><b><%= user.totalDanced %></b> danced</a></li>
+                    <li><a href="/community/profile/want-to-dance"><b><%= user.totalWantToDance %></b> want to dance</a></li>
                 </ul>
                 <ul class="user-actions">
                     <% for(let link of userActions) { %>

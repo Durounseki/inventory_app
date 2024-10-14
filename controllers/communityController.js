@@ -211,7 +211,6 @@ const getProfileEvents = [ async(req,res,next) => {
         userActions = ownUserActions[mode](currentUser.username);
         events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
     }else{
-        console.log(user);
         userActions = otherUserActions(user.username)
         if(canView(user.preferences.visibility.events,currentUser,user)){
             events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
@@ -276,43 +275,71 @@ const getProfileSettings = [ async(req,res,next) => {
 
 const getProfileDanced = [ async(req,res,next) => {
     
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    let userActions;
+    let community;
+    const mode = "view";
+    if(user === currentUser){
+        userActions = ownUserActions[mode](currentUser.username);
+        community = req.app.locals.users.filter(item => user.danced.includes(item.username));
+    }else{
+        userActions = otherUserActions(user.username)
+        if(canView(user.preferences.visibility.network,currentUser,user)){
+            community = req.app.locals.users.filter(item => user.danced.includes(item.username));
+        }else{
+            community = [];
+        }
+    }
 
     res.render('profile', {
         title: 'Profile',
         user: user,
         currentUser: currentUser,
-        authorized: authorized,
-        userActions: authorized ? ownUserActions : otherUserActions,
-        userTabs: othersInfoTabs.map(tab => 
+        community: community,
+        userActions: userActions,
+        userTabs: infoTabs(user.username).map(tab => 
             tab.name === "Danced"
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        about: false,
-        events: false,
-        community: true
+        info: "community"
       })
 }]
 
 const getProfileWantToDance = [ async(req,res,next) => {
     
-    const {user, currentUser, authorized} = isAuthorized(req);
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    let userActions;
+    let community;
+    const mode = "view";
+    if(user === currentUser){
+        userActions = ownUserActions[mode](currentUser.username);
+        community = req.app.locals.users.filter(item => user.wantToDance.includes(item.username));
+    }else{
+        userActions = otherUserActions(user.username)
+        if(canView(user.preferences.visibility.network,currentUser,user)){
+            community = req.app.locals.users.filter(item => user.wantToDance.includes(item.username));
+        }else{
+            community = [];
+        }
+    }
 
     res.render('profile', {
         title: 'Profile',
         user: user,
         currentUser: currentUser,
-        authorized: authorized,
-        userActions: authorized ? ownUserActions : otherUserActions,
-        userTabs: othersInfoTabs.map(tab => 
+        community: community,
+        userActions: userActions,
+        userTabs: infoTabs(user.username).map(tab => 
             tab.name === "Want to Dance"
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        about: false,
-        events: false,
-        community: true
+        info: "community"
     })
 }]
 

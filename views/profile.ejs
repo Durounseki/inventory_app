@@ -57,15 +57,10 @@
                 </section>
             <% }else if(info === "community"){ %>
                 <section class="details-dancers">
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <div class="card"></div>
-                    <% //for(let user of community){ %>
-                        <%- //include("./partials/user_card.ejs",{user: user}) %>
-                    <% //} %>
+                    
+                    <% for(let user of community){ %>
+                        <%- include("./partials/user_card.ejs",{user: user}) %>
+                    <% } %>
                 </section>
             <% } %>
         </div>

@@ -46,9 +46,9 @@ const users = [
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,
-        danced: [],
+        danced: ["dancingqueen"],
         totalDanced: 0,
-        wantToDance: [],
+        wantToDance: ["bachaterolover"],
         totalWantToDance: 0,
         eventsGoing: [1,2,3,4],
         eventsCreated: [2]
@@ -125,15 +125,15 @@ const users = [
         ],
         preferences: {
           visibility: {
-            network: "wantToDance",
-            events: "anyone"
+            network: "public",
+            events: "public"
           }
         },
         following: [],
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,
-        danced: [],
+        danced: ["dancingqueen","bachaterolover"],
         totalDanced: 0,
         wantToDance: [],
         totalWantToDance: 0,
@@ -160,8 +160,8 @@ const users = [
         sns: [],
         preferences: {
           visibility: {
-            network: "me",
-            events: "danced"
+            network: "public",
+            events: "private"
           }
         },
         following: [],

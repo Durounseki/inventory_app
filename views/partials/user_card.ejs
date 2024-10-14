@@ -1,13 +1,13 @@
-<div class="user-card" data-user-id = "<%= user.id %>"></div>
-    <div class="user-thumb">
-        <img src="<%= user.headshot.src %>" alt=" <%= user.headshot.alt %>">
-    </div>
+<div class="user-card" data-user-id = "<%= user.id %>">
+    <figure class="user-thumb">
+        <%- user.avatar %>
+    </figure>
     <div class="user-details">
         <p class="user-name">
             <%= user.name%>
         </p>
-        <p class="user-country">
-            <i class="fa-regular fa-map"></i><%= user.country %>
+        <p class="user-location">
+            <i class="fa-regular fa-map"></i><%= user.location %>
         </p>
         <p class="user-sns">
             <% for(sns of user.sns) { %>

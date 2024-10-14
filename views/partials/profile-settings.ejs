@@ -4,9 +4,24 @@
     
     <label for="user-username">Username</label>
     <input type="text" name="user-username" id="user-username" value="<%= user.username%>">
-    <label for="user-email">Username</label>
+    <label for="user-email">Email</label>
     <input type="text" name="user-email" id="user-email" value="<%= user.email%>">
+    <!-- HoneyPot -->
+    <input type="email" id="user-email-confirm" name="user-email-confirm" autocomplete="off" style="visibility: hidden; position: absolute;">
+
+    <div class="form-separator"></div>
+    <h3 class="form-section-header">Password</h2>
+
+    <label for="user-password">Current password:</label>
+    <input type="password" id="user-password" name="user-password">
+
+    <label for="user-password-new">New Password:</label>
+    <input type="password" id="user-password-new" name="user-password-new">
+
+    <label for="user-password-confirm">Confirm new password:</label>
+    <input type="password" id="user-password-confirm" name="user-password-confirm">
     
+    <div class="form-separator"></div>
     <h3 class="form-section-header">Privacy and Visibility</h2>
 
     <label for="user-network-visibility">Dance network</label>

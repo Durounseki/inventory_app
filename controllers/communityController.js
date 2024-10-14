@@ -90,22 +90,22 @@ const ownUserActions = {
     [
         {
             name: "Edit Profile",
-            href: `community/${username}/edit`
+            href: `/community/${username}/edit`
         },
         {
             name: "Settings",
-            href: `community/${username}/settings`
+            href: `/community/${username}/settings`
         }
     ],
     edit: (username) => 
     [
         {
             name: "New Picture",
-            href: `community/${username}/picture`
+            href: `/community/${username}/picture`
         },
         {
             name: "Delete Picture",
-            href: `community/${username}/picture`
+            href: `/community/${username}/picture`
         }
     ]
 }
@@ -236,41 +236,54 @@ const getProfileEvents = [ async(req,res,next) => {
 
 const getProfileEdit = [ async(req,res,next) => {
     
-    const {user, currentUser, userActions} = checkUser(req);
-
-    res.render('settings', {
-        title: 'Edit Profile',
-        user: user,
-        currentUser: currentUser,
-        userActions: editActions,
-        userTabs: editTabs.map(tab => 
-            tab.name === "Edit Profile"
-            ? {...tab, class: "details-tab active"}
-            : {...tab, class: "details-tab"}
-        ),
-        editProfile: true,
-        profileSettings: false
-
-    })
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    if(user !== currentUser){
+        res.redirect(`/community/${currentUser.username}`);
+    }else{
+        const mode = "edit";
+        const userActions = ownUserActions[mode](currentUser.username);
+        res.render('settings', {
+            title: 'Edit Profile',
+            user: currentUser,
+            userActions: userActions,
+            userTabs: editTabs(user.username).map(tab => 
+                tab.name === "Edit Profile"
+                ? {...tab, class: "details-tab active"}
+                : {...tab, class: "details-tab"}
+            ),
+            editProfile: true,
+            profileSettings: false
+    
+        })
+    }
 }]
 
 const getProfileSettings = [ async(req,res,next) => {
 
-    const {user, currentUser, userActions} = checkUser(req);
-
-    res.render('settings', {
-        title: 'Settings',
-        user: user,
-        authorized: authorized,
-        userActions: editActions,
-        userTabs: editTabs.map(tab => 
-            tab.name === "Settings"
-            ? {...tab, class: "details-tab active"}
-            : {...tab, class: "details-tab"}
-        ),
-        editProfile: false,
-        profileSettings: true
-    })
+    const profileUsername = req.params.username;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const currentUser = req.app.locals.currentUser;
+    if(user !== currentUser){
+        res.redirect(`/community/${currentUser.username}`);
+    }else{
+        const mode = "edit";
+        const userActions = ownUserActions[mode](currentUser.username);
+        
+        res.render('settings', {
+            title: 'Settings',
+            user: currentUser,
+            userActions: userActions,
+            userTabs: editTabs(user.username).map(tab => 
+                tab.name === "Settings"
+                ? {...tab, class: "details-tab active"}
+                : {...tab, class: "details-tab"}
+            ),
+            editProfile: false,
+            profileSettings: true
+        });
+    }
 }]
 
 const getProfileDanced = [ async(req,res,next) => {

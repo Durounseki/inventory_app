@@ -617,6 +617,10 @@ label input:checked ~ .custom-checkbox{
     box-shadow: 2px 2px 2px #00000090;
 }
 
+.user-action button{
+    all: unset;
+}
+
 .user-action:hover{
     background-color: #b4d4ee;
     color: #141414;

@@ -101,11 +101,11 @@ const ownUserActions = {
     [
         {
             name: "New Picture",
-            href: `/community/${username}/picture`
+            route: `/community/${username}/picture`
         },
         {
             name: "Delete Picture",
-            href: `/community/${username}/picture`
+            route: `/community/${username}/picture`
         }
     ]
 }
@@ -113,15 +113,15 @@ const ownUserActions = {
 const otherUserActions = (username) => [
     {
         name: "Follow",
-        href: `community/${username}/follow`
+        route: `/community/${username}/follow`
     },
     {
         name: "Danced",
-        href: `community/${username}/danced`
+        route: `/community/${username}/danced`
     },
     {
         name: "Want to Dance",
-        href: `community/${username}/want-to-dance`
+        route: `/community/${username}/want-to-dance`
     }
 ]
 
@@ -157,7 +157,7 @@ const editTabs = (username) => [
 ]
 
 function canView(preference, currentUser, user){
-
+    console.log(preference);
     switch(preference){
         case "public":
             return true;
@@ -337,7 +337,7 @@ const getProfileWantToDance = [ async(req,res,next) => {
         if(canView(user.preferences.visibility.network,currentUser,user)){
             community = req.app.locals.users.filter(item => user.wantToDance.includes(item.username));
         }else{
-            community = [];
+            community = null;
         }
     }
 
@@ -356,6 +356,84 @@ const getProfileWantToDance = [ async(req,res,next) => {
     })
 }]
 
+const postFollow = [
+    async (req,res,next) => {
+        //Get user
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        //Send request
+        user.followerRequest.push(currentUser.username);
+        currentUser.followRequest.push(user.username);
+        console.log("user: ", user);
+        console.log("current user: ", currentUser);
+        res.redirect(`/community/${user.username}`);
+    }
+]
+
+const postUnfollow = [
+    async (req,res,next) => {
+        //Get user
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        //Remove follower and update counts
+        user.followedBy.filter(item => item !== currentUser.username);
+        user.totalFollowedBy -= 1;
+        currentUser.following.filter(item => item !== user.username);
+        currentUser.totalFollowing -= 1;
+        console.log("user: ", user);
+        console.log("current user: ", currentUser);
+        res.redirect(`/community/${user.username}`);
+    }
+]
+
+const postAcceptFollow = [
+    async (req,res,next) => {
+        //Get follower and current user
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        //Add follower, update follower count and remove request
+        user.following.push(currentUser.username);
+        user.totalFollowing += 1;
+        user.followRequest.filter(item => item !== currentUser.username);
+        currentUser.followedBy.push(user.username);
+        user.totalFollowedBy += 1;
+        currentUser.followerRequest.filter(item => item !== user.username);
+    }
+]
+
+const postDeclineFollow = [
+    async (req,res,next) => {
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        user.followRequest.filter(item => item !== currentUser.username);
+        currentUser.followerRequest.filter(item => item !== user.username);
+    }
+]
+
+const postDanced = [
+    async (req,res,next) => {
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        currentUser.danced.push(user.username);
+        res.redirect(`/community/${user.username}`);
+    }
+]
+
+const postWantToDance = [
+    async (req,res,next) => {
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        currentUser.wantToDance.push(user.username);
+        res.redirect(`/community/${user.username}`);
+    }
+]
+
 const communityController = {
     showDashboard,
     getLogin,
@@ -373,6 +451,13 @@ const communityController = {
     getProfileWantToDance,
     getProfileEdit,
     getProfileSettings,
+    postFollow,
+    postUnfollow,
+    postAcceptFollow,
+    postDeclineFollow,
+    postDanced,
+    postWantToDance,
+    postAcceptFollow
     // getProfile
 };
 

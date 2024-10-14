@@ -43,6 +43,8 @@ const users = [
             }
         },
         following: [],
+        followRequest: [],
+        followerRequest: [],
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,
@@ -84,6 +86,8 @@ const users = [
           }
         },
         following: [],
+        followRequest: [],
+        followerRequest: [],
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,
@@ -130,6 +134,8 @@ const users = [
           }
         },
         following: [],
+        followRequest: [],
+        followerRequest: [],
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,
@@ -165,6 +171,8 @@ const users = [
           }
         },
         following: [],
+        followRequest: [],
+        followerRequest: [],
         totalFollowing: 0,
         followedBy: [],
         totalFollowedBy: 0,

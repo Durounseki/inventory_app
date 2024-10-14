@@ -27,6 +27,13 @@ communityRouter.get("/:username/edit", communityController.getProfileEdit);
 communityRouter.get("/:username/settings", communityController.getProfileSettings);
 communityRouter.get("/:username/danced", communityController.getProfileDanced);
 communityRouter.get("/:username/want-to-dance", communityController.getProfileWantToDance);
+//Follow, Danced, Want to dance
+communityRouter.post("/follow", communityController.postFollow);
+communityRouter.post("/unfollow", communityController.postFollow);
+communityRouter.post("/accept-follow", communityController.postAcceptFollow);
+communityRouter.post("/decline-follow", communityController.postDeclineFollow);
+communityRouter.post("/danced", communityController.postDanced);
+communityRouter.post("/want-t0-dance", communityController.postWantToDance);
 
 
 export default communityRouter;

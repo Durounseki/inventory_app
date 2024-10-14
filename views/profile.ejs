@@ -2,9 +2,11 @@
 
 <div class="profile-container">
     <section class="user-banner">
-        <figure class="profile-picture">
-            <%- user.avatar %>
-        </figure>
+        <a href="/community/<%=user.username%>">
+            <figure class="profile-picture">
+                <%- user.avatar %>
+            </figure>
+        </a>
         <div class="user-intro">
             <div class="user-greeting">
                 <h1 class="name"><%= user.name %></h1>
@@ -18,7 +20,14 @@
                 <ul class="user-actions">
                     <% for(let link of userActions) { %>
                         <li class="user-action">
-                            <a href="<%= link.href %>"><%= link.name %></a>
+                            <% if(link.href) { %>
+                                <a href="<%= link.href %>"><%= link.name %></a>
+                            <% }else if(link.route){ %>
+                                <form action="<%= link.route %>" method="POST">
+                                    <input type="hidden" name="username" value="<%= user.username %>">
+                                    <button type="submit"><%= link.name %></button>
+                                </form>
+                            <% } %>
                         </li>
                     <% } %>
                 </ul>
@@ -56,11 +65,20 @@
                     </pre>
                 </section>
             <% }else if(info === "community"){ %>
+
                 <section class="details-dancers">
-                    
-                    <% for(let user of community){ %>
-                        <%- include("./partials/user_card.ejs",{user: user}) %>
+                    <% if(community) { %>
+                        <% if(community.length > 0){ %>
+                            <% for(let user of community){ %>
+                                <%- include("./partials/user_card.ejs",{user: user}) %>
+                            <% } %>
+                        <% }else{ %>
+                            <h2>No one here yet</h2>
+                        <% } %>
+                    <% }else{ %>
+                        <h2><%= user.name %>'s community is private</h2>
                     <% } %>
+                    
                 </section>
             <% } %>
         </div>

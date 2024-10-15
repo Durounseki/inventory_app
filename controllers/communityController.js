@@ -113,15 +113,15 @@ const ownUserActions = {
 const otherUserActions = (username) => [
     {
         name: "Follow",
-        route: `/community/${username}/follow`
+        route: `/community/follow`
     },
     {
         name: "Danced",
-        route: `/community/${username}/danced`
+        route: `/community/danced`
     },
     {
         name: "Want to Dance",
-        route: `/community/${username}/want-to-dance`
+        route: `/community/want-to-dance`
     }
 ]
 
@@ -365,9 +365,8 @@ const postFollow = [
         //Send request
         user.followerRequest.push(currentUser.username);
         currentUser.followRequest.push(user.username);
-        console.log("user: ", user);
-        console.log("current user: ", currentUser);
-        res.redirect(`/community/${user.username}`);
+        res.json({user: user, currentUser: currentUser});
+        // res.redirect(`/community/${user.username}`);
     }
 ]
 
@@ -378,13 +377,12 @@ const postUnfollow = [
         const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
         const currentUser = req.app.locals.currentUser;
         //Remove follower and update counts
-        user.followedBy.filter(item => item !== currentUser.username);
+        user.followedBy = user.followedBy.filter(item => item !== currentUser.username);
         user.totalFollowedBy -= 1;
-        currentUser.following.filter(item => item !== user.username);
+        currentUser.following = currentUser.following.filter(item => item !== user.username);
         currentUser.totalFollowing -= 1;
-        console.log("user: ", user);
-        console.log("current user: ", currentUser);
-        res.redirect(`/community/${user.username}`);
+        res.json({user: user, currentUser: currentUser})
+        // res.redirect(`/community/${user.username}`);
     }
 ]
 
@@ -397,10 +395,11 @@ const postAcceptFollow = [
         //Add follower, update follower count and remove request
         user.following.push(currentUser.username);
         user.totalFollowing += 1;
-        user.followRequest.filter(item => item !== currentUser.username);
+        user.followRequest = user.followRequest.filter(item => item !== currentUser.username);
         currentUser.followedBy.push(user.username);
-        user.totalFollowedBy += 1;
-        currentUser.followerRequest.filter(item => item !== user.username);
+        currentUser.totalFollowedBy += 1;
+        currentUser.followerRequest = currentUser.followerRequest.filter(item => item !== user.username);
+        res.json({user: user, currentUser: currentUser})
     }
 ]
 
@@ -409,8 +408,22 @@ const postDeclineFollow = [
         const followerUsername = req.body.username;
         const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
         const currentUser = req.app.locals.currentUser;
-        user.followRequest.filter(item => item !== currentUser.username);
-        currentUser.followerRequest.filter(item => item !== user.username);
+        user.followRequest = user.followRequest.filter(item => item !== currentUser.username);
+        currentUser.followerRequest = currentUser.followerRequest.filter(item => item !== user.username);
+        res.json({user: user, currentUser: currentUser})
+    }
+]
+
+const postRemoveFollow = [
+    async (req,res,next) => {
+        const followerUsername = req.body.username;
+        const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
+        const currentUser = req.app.locals.currentUser;
+        user.following = user.following.filter(item => item !== currentUser.username);
+        user.totalFollowing -= 1;
+        currentUser.followedBy = currentUser.followedBy.filter(item => item !== user.username);
+        currentUser.totalFollowedBy -= 1;
+        res.json({user: user, currentUser: currentUser})
     }
 ]
 
@@ -420,7 +433,12 @@ const postDanced = [
         const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
         const currentUser = req.app.locals.currentUser;
         currentUser.danced.push(user.username);
-        res.redirect(`/community/${user.username}`);
+        if(currentUser.wantToDance.includes(user.username)){
+            currentUser.wantToDance = currentUser.wantToDance.filter(item => item.username !== user.username);
+            currentUser.totalWantToDance -= 1;
+        }
+        currentUser.totalDanced += 1;
+        res.json({user: user, currentUser:currentUser});
     }
 ]
 
@@ -430,7 +448,9 @@ const postWantToDance = [
         const user = req.app.locals.users.filter(item => item.username === followerUsername)[0];
         const currentUser = req.app.locals.currentUser;
         currentUser.wantToDance.push(user.username);
-        res.redirect(`/community/${user.username}`);
+        currentUser.totalWantToDance += 1;
+        res.json({user: user, currentUser:currentUser});
+        // res.redirect(`/community/${user.username}`);
     }
 ]
 
@@ -455,6 +475,7 @@ const communityController = {
     postUnfollow,
     postAcceptFollow,
     postDeclineFollow,
+    postRemoveFollow,
     postDanced,
     postWantToDance,
     postAcceptFollow

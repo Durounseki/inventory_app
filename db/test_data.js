@@ -42,12 +42,12 @@ const users = [
                 events: "public"
             }
         },
-        following: [],
-        followRequest: [],
-        followerRequest: [],
-        totalFollowing: 0,
-        followedBy: [],
-        totalFollowedBy: 0,
+        following: ["groovyguru"],
+        followRequest: ["salsaking98"],
+        followerRequest: ["dancingqueen"],
+        totalFollowing: 1,
+        followedBy: ["bachaterolover"],
+        totalFollowedBy: 1,
         danced: ["dancingqueen"],
         totalDanced: 0,
         wantToDance: ["bachaterolover"],
@@ -86,7 +86,7 @@ const users = [
           }
         },
         following: [],
-        followRequest: [],
+        followRequest: ["durounseki"],
         followerRequest: [],
         totalFollowing: 0,
         followedBy: [],
@@ -137,8 +137,8 @@ const users = [
         followRequest: [],
         followerRequest: [],
         totalFollowing: 0,
-        followedBy: [],
-        totalFollowedBy: 0,
+        followedBy: ["durounseki"],
+        totalFollowedBy: 1,
         danced: ["dancingqueen","bachaterolover"],
         totalDanced: 0,
         wantToDance: [],
@@ -170,10 +170,10 @@ const users = [
             events: "private"
           }
         },
-        following: [],
+        following: ["durounseki"],
         followRequest: [],
         followerRequest: [],
-        totalFollowing: 0,
+        totalFollowing: 1,
         followedBy: [],
         totalFollowedBy: 0,
         danced: [],
@@ -182,7 +182,46 @@ const users = [
         totalWantToDance: 0,
         eventsGoing: [3,4,5,6],
         eventsCreated: [1]
+      },
+
+      {
+        username: "salsaking98",
+        avatar: createAvatar(shapes, {
+          seed: "salsaking98",
+          radius: 50,
+          backgroundColor: ["000080"], 
+          shape1Color: ["ff0000"], 
+          shape2Color: ["ffff00"], 
+          shape3Color: ["ffffff"]  
+        }).toString(),
+        email: "salsaking98@example.com",
+        name: "Carlos",
+        nationality: "Cuba",
+        location: "Miami, Florida", 
+        greeting: "¡Hola! ¡Bailamos!", 
+        bio: "Salsa is my lifeblood! I've been dancing since I could walk. I love the energy, the rhythm, and the joy of salsa.  Always looking for new partners to dance with!",
+        style: ["Salsa", "Mambo", "Cha-cha-cha"], 
+        sns: ["instagram.com/salsaking98"], 
+        preferences: {
+          visibility: {
+            network: "private", 
+            events: "public" 
+          }
+        },
+        following: [], 
+        followRequest: ["durounseki"],
+        followerRequest: [],
+        totalFollowing: 0,
+        followedBy: [],
+        totalFollowedBy: 0,
+        danced: [], 
+        totalDanced: 0,
+        wantToDance: [],
+        totalWantToDance: 0,
+        eventsGoing: [2, 6],
+        eventsCreated: [] 
       }
+      
 ]
 
 const events = [

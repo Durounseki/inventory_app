@@ -29,11 +29,17 @@ communityRouter.get("/:username/danced", communityController.getProfileDanced);
 communityRouter.get("/:username/want-to-dance", communityController.getProfileWantToDance);
 //Follow, Danced, Want to dance
 communityRouter.post("/follow", communityController.postFollow);
-communityRouter.post("/unfollow", communityController.postFollow);
+communityRouter.post("/unfollow", communityController.postUnfollow);
 communityRouter.post("/accept-follow", communityController.postAcceptFollow);
 communityRouter.post("/decline-follow", communityController.postDeclineFollow);
+communityRouter.post("/remove-follow", communityController.postRemoveFollow);
 communityRouter.post("/danced", communityController.postDanced);
-communityRouter.post("/want-t0-dance", communityController.postWantToDance);
+communityRouter.post("/want-to-dance", communityController.postWantToDance);
+
+communityRouter.post("/changeUser", (req,res,next) => {
+    req.app.locals.currentUser = req.app.locals.users.filter(user => user.username === req.body.username)
+    res.json({currentUser: req.app.locals.currentUser});
+})
 
 
 export default communityRouter;

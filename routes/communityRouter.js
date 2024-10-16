@@ -24,6 +24,7 @@ communityRouter.post("/reset-password", communityController.postResetPassword);
 communityRouter.get("/:username", communityController.getProfileAbout);
 communityRouter.get("/:username/events", communityController.getProfileEvents);
 communityRouter.get("/:username/edit", communityController.getProfileEdit);
+communityRouter.post("/:username/edit", communityController.postProfileEdit);
 communityRouter.get("/:username/settings", communityController.getProfileSettings);
 communityRouter.get("/:username/danced", communityController.getProfileDanced);
 communityRouter.get("/:username/want-to-dance", communityController.getProfileWantToDance);

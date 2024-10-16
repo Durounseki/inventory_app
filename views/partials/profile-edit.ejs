@@ -1,7 +1,9 @@
-<form action="/community/profile/edit">
+<form action="/community/<%= user.username %>/edit" id="edit-profile-form" method="POST">
                 
     <label for="user-name">Name</label>
-    <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value=" <%= user.name %> "<% } %> placeholder="Your name" >
+    <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
+    <label for="user-greeting">Greeting</label>
+    <input type="text" name="user-greeting" id="user-greeting" <% if(user.greeting) { %> value="<%= user.greeting %>"<% } %> placeholder="Let's dance together!">
 
     <div class="form-separator"></div>
     <h3 class="user-form-section-header">Dance Styles</h2>
@@ -28,15 +30,18 @@
             Zouk
         </label>
         <% for(item of user.style.filter(item => !["Salsa","Bachata","Kizomba","Zouk"].includes(item))) { %>
-            <label for="<%= item.toLowerCase %>">
-                <input class="user-style-checkbox" type="checkbox" id="<%= item.toLowerCase %>" name="user-style" value="<%= item.toLowerCase %>" checked>
+            <label for="<%= item.toLowerCase() %>">
+                <input class="user-style-checkbox" type="checkbox" id="<%= item.toLowerCase() %>" name="user-style" value="<%= item.toLowerCase() %>" checked>
                 <div class="custom-checkbox"></div>
                 <%= item %>
             </label>
         <% } %> 
     </div>
     <label for="other">Other</label>
-    <input type="text" id="other" name="user-style">
+    <div class="user-other-style">
+        <input type="text" id="other">
+        <button type="button" id="user-add-style">Add style</button>
+    </div>
 
     <div class="form-separator"></div>
     <h3 class="user-form-section-header">About</h2>
@@ -67,4 +72,5 @@
     </div>
     <button type="button" id="user-add-sns">Add Link</button>
 
+    <button type="submit">Save</button>
 </form>

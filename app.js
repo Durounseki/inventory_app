@@ -6,6 +6,9 @@ const app = express();
 import path from 'node:path';
 const __dirname = import.meta.dirname;
 
+//Frontend update
+import browserSync from 'browser-sync';
+
 //CORS
 import cors from 'cors';
 const PORT = process.env.PORT || 3000;
@@ -162,4 +165,14 @@ app.use("/events",eventsRouter);
 app.use("/community",communityRouter);
 
 
-app.listen(PORT, () => console.log(`App listening on port ${PORT}!`));
+app.listen(PORT, () => {
+    console.log(`App listening on port ${PORT}!`);
+    browserSync.init({
+        files: [
+            '**/*.ejs',
+            'public/**/*'
+        ],
+        proxy: `localhost:${PORT}`,
+        open: false
+    });
+});

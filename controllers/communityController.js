@@ -1,8 +1,9 @@
-import * as dotenv from 'dotenv'; 
+import * as dotenv from 'dotenv';
 dotenv.config();
 
 //Data base
 import * as db from '../db/communityQueries.js';
+import {snsFaClass} from '../db/utils.js';
 //Form validation
 import {loginValidators, signupValidators, forgotPasswordValidators, resetPasswordValidators, validateUserForm} from './validators.js';
 
@@ -101,11 +102,11 @@ const ownUserActions = {
     [
         {
             name: "New Picture",
-            route: `/community/${username}/picture`
+            route: `/community/${username}/new-picture`
         },
         {
             name: "Delete Picture",
-            route: `/community/${username}/picture`
+            route: `/community/${username}/delete-picture`
         }
     ]
 }
@@ -254,8 +255,8 @@ const getProfileEdit = [ async(req,res,next) => {
                 : {...tab, class: "details-tab"}
             ),
             editProfile: true,
-            profileSettings: false
-    
+            profileSettings: false,
+            script: "edit-profile.js"
         })
     }
 }]
@@ -454,6 +455,44 @@ const postWantToDance = [
     }
 ]
 
+const postProfileEdit = [
+    async (req,res,next) => {
+        const data = req.body;
+        const currentUser = req.app.locals.currentUser;
+        let snsPlatforms;
+        let snsUrls;
+        if(Array.isArray(data['user-sns-platform'])){
+            snsPlatforms = data['user-sns-platform'];
+            snsUrls = data['user-sns-url'];
+        }else{
+            snsPlatforms = [data['user-sns-platform']];
+            snsUrls = [data['user-sns-url']];
+        };
+        let userSns = [];
+        snsPlatforms.forEach((platform,index) => {
+            userSns.push({
+                name: platform,
+                url: snsUrls[index],
+                faClass: snsFaClass[platform]
+            })
+        })
+        let userStyles;
+        if(Array.isArray(data['user-style'])){
+            userStyles = data['user-style'].filter(style => style !== '').map(style => style.charAt(0).toUpperCase() + style.slice(1).toLowerCase());
+        }else{
+            userStyles = [data['user-style'].filter(style => style !== '').map(style => style.charAt(0).toUpperCase() + style.slice(1).toLowerCase())];
+        }
+        currentUser.name = data["user-name"];
+        currentUser.nationality = data["user-nationality"];
+        currentUser.location = data["user-location"];
+        currentUser.greeting = data["user-greeting"];
+        currentUser.bio = data["user-bio"];
+        currentUser.sns = userSns;
+        currentUser.style = userStyles;
+        res.json({currentUser: currentUser});
+    }   
+]
+
 const communityController = {
     showDashboard,
     getLogin,
@@ -478,8 +517,8 @@ const communityController = {
     postRemoveFollow,
     postDanced,
     postWantToDance,
-    postAcceptFollow
-    // getProfile
+    postAcceptFollow,
+    postProfileEdit
 };
 
 export default communityController;

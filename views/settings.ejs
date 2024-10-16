@@ -20,7 +20,10 @@
                 <ul class="user-actions">
                     <% for(let link of userActions) { %>
                         <li class="user-action">
-                            <a href="<%= link.url %>"><%= link.name %></a>
+                            <form action="<%= link.route %>" method="POST">
+                                <input type="hidden" name="username" value="<%= user.username %>">
+                                <button type="submit"><%= link.name %></button>
+                            </form>
                         </li>
                     <% } %>
                 </ul>

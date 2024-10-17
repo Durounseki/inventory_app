@@ -2,10 +2,12 @@
     
     <h3 class="form-section-header">General</h2>
     
+    
     <label for="user-username">Username</label>
     <input type="text" name="user-username" id="user-username" value="<%= user.username%>">
     <label for="user-email">Email</label>
     <input type="text" name="user-email" id="user-email" value="<%= user.email%>">
+    
     <!-- HoneyPot -->
     <input type="email" id="user-email-confirm" name="user-email-confirm" autocomplete="off" style="visibility: hidden; position: absolute;">
 
@@ -14,29 +16,38 @@
 
     <label for="user-password">Current password:</label>
     <input type="password" id="user-password" name="user-password">
+    
 
     <label for="user-password-new">New Password:</label>
     <input type="password" id="user-password-new" name="user-password-new">
+    
 
     <label for="user-password-confirm">Confirm new password:</label>
     <input type="password" id="user-password-confirm" name="user-password-confirm">
+    
     
     <div class="form-separator"></div>
     <h3 class="form-section-header">Privacy and Visibility</h2>
 
     <label for="user-network-visibility">Private dance network</label>
     <input type="range" name="user-network-visibility" id="user-network-visibility" min="0" max="1" <% if(user.preferences.visibility.network === "public" ) { %> value=0 <% }else{ %> value=1 <% } %>/>
-
+    
     <label for="user-events-visibility">Private events</label>
     <input type="range" name="user-events-visibility" id="user-events-visibility" min="0" max="1" <% if(user.preferences.visibility.events === "public" ) { %> value=0 <% }else{ %> value=1 <% } %>/>
-
+    
     <button type="submit">Save</button>
 
 </form>
 
-<form id="delete-account" action="/community/profile/delete" method="post">
-    
+<div class="delete-account-container">
     <h3 class="user-form-section-header">Danger zone</h2>
-    <button type="submit">Delete Account</button>
+    <button type="button" id="delete-account-button">Delete Account</button>
+    <form id="delete-account" action="/community/<%= user.username %>/delete" method="post">
+        <p>Are you sure you want to delete your account, this action cannot be undone.</p>
 
-</form>
+            <label for="user-password">Password:</label>
+            <input type="password" id="user-password" name="user-password" requiered>
+        </div>
+        <button type="submit">Delete Account</button>
+    </form>
+</div>

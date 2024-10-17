@@ -1,76 +1,86 @@
-<form action="/community/<%= user.username %>/edit" id="edit-profile-form" method="POST">
+<form action="/community/<%= user.username %>/edit" method="POST">
                 
-    <label for="user-name">Name</label>
-    <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
-    <label for="user-greeting">Greeting</label>
-    <input type="text" name="user-greeting" id="user-greeting" <% if(user.greeting) { %> value="<%= user.greeting %>"<% } %> placeholder="Let's dance together!">
-
-    <div class="form-separator"></div>
-    <h3 class="user-form-section-header">Dance Styles</h2>
-
-    <div class="style-checkbox-container">
-        <label for="salsa">
-            <input class="user-style-checkbox" type="checkbox" id="salsa" name="user-style" value="salsa" <% if(user.style.includes("Salsa")) { %> checked <% } %>>
-            <div class="custom-checkbox"></div>
-            Salsa
-        </label>
-        <label for="bachata">
-            <input class="user-style-checkbox" type="checkbox" id="bachata" name="user-style" value="bachata" <% if(user.style.includes("Bachata")) { %> checked <% } %>>
-            <div class="custom-checkbox"></div>
-            Bachata
-        </label>
-        <label for="kizomba">
-            <input class="user-style-checkbox" type="checkbox" id="kizomba" name="user-style" value="kizomba" <% if(user.style.includes("Kizomba")) { %> checked <% } %>>
-            <div class="custom-checkbox"></div>
-            Kizomba
-        </label>
-        <label for="zouk">
-            <input class="user-style-checkbox" type="checkbox" id="zouk" name="user-style" value="zouk" <% if(user.style.includes("Zouk")) { %> checked <% } %>>
-            <div class="custom-checkbox"></div>
-            Zouk
-        </label>
-        <% for(item of user.style.filter(item => !["Salsa","Bachata","Kizomba","Zouk"].includes(item))) { %>
-            <label for="<%= item.toLowerCase() %>">
-                <input class="user-style-checkbox" type="checkbox" id="<%= item.toLowerCase() %>" name="user-style" value="<%= item.toLowerCase() %>" checked>
+    <div class="form-fields-container">
+        
+        <label for="user-name">Name</label>
+        <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
+        
+        <label for="user-greeting">Greeting</label>
+        <input type="text" name="user-greeting" id="user-greeting" <% if(user.greeting) { %> value="<%= user.greeting %>"<% } %> placeholder="Let's dance together!">
+        
+        <!-- HoneyPot -->
+        <input type="email" id="user-email" name="user-email" autocomplete="off" style="visibility: hidden; position: absolute;">
+        
+        <div class="form-separator"></div>
+        <h3 class="form-section-header">Dance Styles</h2>
+        
+        <div class="form-checkbox-container">
+            <label for="salsa">
+                <input class="user-style-checkbox" type="checkbox" id="salsa" name="user-style" value="salsa" <% if(user.style.includes("Salsa")) { %> checked <% } %>>
                 <div class="custom-checkbox"></div>
-                <%= item %>
+                Salsa
             </label>
-        <% } %> 
+            <label for="bachata">
+                <input class="user-style-checkbox" type="checkbox" id="bachata" name="user-style" value="bachata" <% if(user.style.includes("Bachata")) { %> checked <% } %>>
+                <div class="custom-checkbox"></div>
+                Bachata
+            </label>
+            <label for="kizomba">
+                <input class="user-style-checkbox" type="checkbox" id="kizomba" name="user-style" value="kizomba" <% if(user.style.includes("Kizomba")) { %> checked <% } %>>
+                <div class="custom-checkbox"></div>
+                Kizomba
+            </label>
+            <label for="zouk">
+                <input class="user-style-checkbox" type="checkbox" id="zouk" name="user-style" value="zouk" <% if(user.style.includes("Zouk")) { %> checked <% } %>>
+                <div class="custom-checkbox"></div>
+                Zouk
+            </label>
+            <% for(item of user.style.filter(item => !["Salsa","Bachata","Kizomba","Zouk"].includes(item))) { %>
+                <label for="<%= item.toLowerCase() %>">
+                    <input class="user-style-checkbox" type="checkbox" id="<%= item.toLowerCase() %>" name="user-style" value="<%= item.toLowerCase() %>" checked>
+                    <div class="custom-checkbox"></div>
+                    <%= item %>
+                </label>
+            <% } %>
+        </div>
+        
+        <label for="other">Other</label>
+        <div class="other-style-container">
+            <input type="text" id="other">
+            <button type="button" id="user-add-style" class="form-button">Add style</button>
+        </div>
+        
+        <div class="form-separator"></div>
+        <h3 class="form-section-header">About</h2>
+        
+        <label for="user-nationality">Nationality</label>
+        <input type="select" name="user-nationality" id="user-nationality" value="<%= user.nationality%>">
+        
+        <label for="user-location">Location</label>
+        <input type="select" name="user-location" id="user-location" value="<%= user.country%>">
+        
+        <label for="user-bio">Bio</label>
+        <textarea id="user-bio" name="user-bio" placeholder="Share your dance journey!"><%= user.bio %></textarea>
+        
+        <div class="form-separator"></div>
+        <h3 class="form-section-header">Social Media</h2>
+        
+        <div class="sns-container">
+            <% for(sns of user.sns) { %>
+                <div class="sns-group">
+                    <select name="user-sns-platform">
+                        <option value="website" <% if(sns.name === "website" ) { %> selected <% } %>>Website</option>
+                        <option value="facebook" <% if(sns.name === "facebook" ) { %> selected <% } %>>Facebook</option>
+                        <option value="instagram" <% if(sns.name === "instagram" ) { %> selected <% } %>>Instagram</option>
+                        <option value="youtube" <% if(sns.name === "youtube" ) { %> selected <% } %>>Youtube</option>
+                    </select>
+                    <input type="text" name="user-sns-url" value="<%= sns.url %>" >
+                    <button type="button" class="remove-sns">Remove</button>
+                </div>
+            <% } %>
+        </div>
+        <button type="button" id="user-add-sns" class="form-button">Add Link</button>
+        
+        <button type="submit" id="save-profile" class="form-button">Save</button>
     </div>
-    <label for="other">Other</label>
-    <div class="user-other-style">
-        <input type="text" id="other">
-        <button type="button" id="user-add-style">Add style</button>
-    </div>
-
-    <div class="form-separator"></div>
-    <h3 class="user-form-section-header">About</h2>
-
-    <label for="user-nationality">Nationality</label>
-    <input type="select" name="user-nationality" id="user-nationality" value="<%= user.nationality%>">
-    <label for="user-location">Location</label>
-    <input type="select" name="user-location" id="user-location" value="<%= user.country%>">
-    <label for="user-bio">Bio</label>
-    <textarea id="user-bio" name="user-bio" placeholder="Share your dance journey!"><%= user.bio %></textarea>
-
-    <div class="form-separator"></div>
-    <h3 class="user-form-section-header">Social Media</h2>
-
-    <div class="user-sns-container">
-        <% for(sns of user.sns) { %>
-            <div class="user-sns-group">
-                <select name="user-sns-platform">
-                    <option value="website" <% if(sns.name === "website" ) { %> selected <% } %>>Website</option>
-                    <option value="facebook" <% if(sns.name === "facebook" ) { %> selected <% } %>>Facebook</option>
-                    <option value="instagram" <% if(sns.name === "instagram" ) { %> selected <% } %>>Instagram</option>
-                    <option value="youtube" <% if(sns.name === "youtube" ) { %> selected <% } %>>Youtube</option>
-                </select>
-                <input type="text" name="user-sns-url" value="<%= sns.url %>" >
-                <button type="button" class="remove-sns">Remove</button>
-            </div>
-        <% } %>
-    </div>
-    <button type="button" id="user-add-sns">Add Link</button>
-
-    <button type="submit">Save</button>
 </form>

@@ -4,7 +4,7 @@
     <section class="user-banner">
         <a href="/community/<%=user.username%>">
             <figure class="profile-picture">
-                <%if(user.profilePic !== "") { %>
+                <%if(user.profilePic && user.profilePic !== "") { %>
                     <%- user.profilePic %>
                 <% }else{ %>
                     <%- user.avatar %>

@@ -1,3 +1,15 @@
+//Resize text area
+const textAreas = document.querySelectorAll('textarea');
+textAreas.forEach(area =>{
+    area.addEventListener('input',resizeTextArea);
+    resizeTextArea({target: area});
+});
+
+function resizeTextArea(event){
+    event.target.style.height = `5em`;
+    event.target.style.height = `${event.target.scrollHeight}px`;
+}
+
 //Add sns
 const snsContainer = document.querySelector('.user-sns-container');
 const addSnsButton = document.getElementById('user-add-sns');
@@ -67,7 +79,7 @@ function addSnsInputGroup() {
 }
 
 //Add style
-const styleContainer = document.querySelector('.style-checkbox-container');
+const styleContainer = document.querySelector('.form-checkbox-container');
 const addStyleButton = document.getElementById('user-add-style');
 const otherStyleInput = document.getElementById('other');
 
@@ -76,7 +88,6 @@ addStyleButton.addEventListener('click',addStyleCheckbox);
 function addStyleCheckbox() {
   
     const styles = getUserStyles();
-    console.log(styles);
     const newStyle = otherStyleInput.value.trim().toLowerCase();
     const formattedStyle = newStyle.charAt(0).toUpperCase() + newStyle.slice(1);
 

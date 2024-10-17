@@ -500,7 +500,7 @@ input[type="date"]{
     color: #b4d4ee;
 }
 
-#event-add-sns, #user-add-sns, .submit-event{
+#event-add-sns, .submit-event{
     grid-column: 2;
     margin-left: auto;
     background-color: #202020;
@@ -533,7 +533,7 @@ input[type="file"]::file-selector-button{
     color:#fff5ff;
 }
 
-.style-checkbox-container{
+.form-checkbox-container{
     grid-column: 1 / 3;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -778,4 +778,121 @@ pre{
     :first-child{
         margin-left: auto;
     }
+}
+
+#delete-account{
+    display: none;
+}
+
+#delete-account.show{
+    display: block;
+}
+
+.form-fields-container{
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    align-items: center;
+    gap: 16px;
+}
+
+.form-section-header{
+    grid-column: 1 / 3;
+}
+
+.sns-container{
+    grid-column: 1 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: height 0.3s ease-in-out;   
+}
+.sns-group{
+    background-color: #202020;
+    padding: 8px 16px;
+    border-radius: 24px;
+    color:#fff5ff;
+    display: flex;
+    input{
+        flex: 1;
+    }
+    input:focus{
+        border: solid 1px #20202000;
+    }
+    select, button{
+        background-color: #202020;
+        border: solid 1px #20202000;
+        padding: 8px 16px;
+        border-radius: 16px;
+        color:#fff5ff;
+    }
+    select:focus{
+        outline: none;
+    }
+}
+
+.form-fields-container input{
+    background-color: #202020;
+    border: solid 1px #20202000;
+    padding: 8px 16px;
+    border-radius: 16px;
+    height: 16px;
+    color:#fff5ff;
+}
+
+.form-fields-container input:focus{
+    border: solid 1px #b4d4ee;
+    outline: none;
+}
+
+.form-fields-container label{
+    align-self: start;
+}
+
+.other-style-container{
+    display: flex;
+    gap: 16px;
+}
+
+.form-button{
+    grid-column: 2;
+    margin-left: auto;
+    background-color: #202020;
+    border: solid 1px #505050;
+    padding: 8px 16px;
+    border-radius: 16px;
+    color:#fff5ff;
+    box-shadow: 2px 2px 2px#00000090;
+}
+
+.form-button:hover{
+    background-color: #b4d4ee;
+    color:#141414;
+}
+
+input#other{
+    flex: 1;
+}
+
+textarea{
+    background-color: #202020;
+    border: solid 1px #20202000;
+    padding: 8px 16px;
+    border-radius: 16px;
+    color:#fff5ff;
+    resize: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    height: 5em;
+}
+
+textarea:focus{
+    border: solid 1px #b4d4ee;
+    outline: none;
+}
+
+#save-profile{
+    grid-column: 1 / 3;
+    width: 100%;
+    margin-top: 32px
 }

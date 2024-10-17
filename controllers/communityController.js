@@ -183,7 +183,7 @@ function canView(preference, currentUser, user){
 const getProfileAbout = [ async(req,res,next) => {
     
     const profileUsername = req.params.username;
-    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
+    const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];
     const currentUser = req.app.locals.currentUser;
     let userActions;
     const mode = "view";
@@ -289,7 +289,8 @@ const getProfileSettings = [ async(req,res,next) => {
                 : {...tab, class: "details-tab"}
             ),
             editProfile: false,
-            profileSettings: true
+            profileSettings: true,
+            script: "settings.js"
         });
     }
 }]
@@ -508,6 +509,8 @@ const postSettings = [
         currentUser.email = data["user-email"];
         if(data["user-password-new"] !== ""){
             currentUser.password = data["user-password-new"];
+        }else if(currentUser.password === data["user-password"]){
+            currentUser.password = data["user-password-new"];
         }
         console.log(data["user-visibility-events"]);
         currentUser.preferences.visibility.events = +data["user-events-visibility"] === 1 ? "private" : "public";
@@ -530,6 +533,19 @@ const postDeletePicture = [
         const currentUser = req.app.locals.currentUser;
         currentUser.profilePic = "";
         res.redirect(`/community/${currentUser.username}/edit`);
+    }
+]
+
+const postDeleteAccount =  [
+    async (req,res,next) => {
+        const password = req.body["user-password"];
+        const currentUser = req.app.locals.currentUser;
+        if(password === currentUser.password){
+            req.app.locals.users = req.app.locals.users.filter(user => user.username !== currentUser.username);
+            res.json(req.app.locals.users.map(user => user.username));
+        }else{
+            res.send("Incorrect password");
+        }
     }
 ]
 
@@ -561,7 +577,8 @@ const communityController = {
     postProfileEdit,
     postSettings,
     postEditPicture,
-    postDeletePicture
+    postDeletePicture,
+    postDeleteAccount
 };
 
 export default communityController;

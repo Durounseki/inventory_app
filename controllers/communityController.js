@@ -493,6 +493,22 @@ const postProfileEdit = [
     }   
 ]
 
+const postSettings = [
+    async (req,res,next) => {
+        const data = req.body;
+        const currentUser = req.app.locals.currentUser;
+        currentUser.username = data["user-username"];
+        currentUser.email = data["user-email"];
+        if(data["user-password-new"] !== ""){
+            currentUser.password = data["user-password-new"];
+        }
+        console.log(data["user-visibility-events"]);
+        currentUser.preferences.visibility.events = +data["user-events-visibility"] === 1 ? "private" : "public";
+        currentUser.preferences.visibility.network = +data["user-network-visibility"] === 1 ? "private" : "public";
+        res.json({currentUser: currentUser});
+    }
+]
+
 const communityController = {
     showDashboard,
     getLogin,
@@ -518,7 +534,8 @@ const communityController = {
     postDanced,
     postWantToDance,
     postAcceptFollow,
-    postProfileEdit
+    postProfileEdit,
+    postSettings
 };
 
 export default communityController;

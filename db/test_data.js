@@ -13,6 +13,7 @@ const users = [
             shape3Color: ["b4d4ee"]
         }).toString(),
         email: "durounseki@thedancethread.com",
+        password: "password",
         name: "Christian",
         nationality: "Mexico",
         location: "Japan",
@@ -66,6 +67,7 @@ const users = [
             shape3Color: ["b4d4ee"]
         }).toString(),
         email: "dancingqueen@example.com",
+        password: "password",
         name: "Maria",
         nationality: "Spain",
         location: "Colombia",
@@ -109,6 +111,7 @@ const users = [
             shape3Color: ["b4d4ee"]
         }).toString(),
         email: "groovyguru@example.com",
+        password: "password",
         name: "David",
         nationality: "Brazil",
         location: "United States",
@@ -157,6 +160,7 @@ const users = [
             shape3Color: ["b4d4ee"]
         }).toString(),
         email: "bachaterolover@example.com",
+        password: "password",
         name: "Aisha",
         nationality: "Dominican Republic",
         location: "Dominican Republic",
@@ -195,6 +199,7 @@ const users = [
           shape3Color: ["ffffff"]  
         }).toString(),
         email: "salsaking98@example.com",
+        password: "password",
         name: "Carlos",
         nationality: "Cuba",
         location: "Miami, Florida", 

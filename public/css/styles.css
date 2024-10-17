@@ -640,6 +640,12 @@ label input:checked ~ .custom-checkbox{
     flex-shrink: 0;
 }
 
+.profile-picture img{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
 .user-details nav ul{
     margin: 0;
     display: flex;

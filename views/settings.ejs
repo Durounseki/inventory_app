@@ -4,7 +4,11 @@
     <section class="user-banner">
         <a href="/community/<%=user.username%>">
             <figure class="profile-picture">
-                <%- user.avatar %>
+                <%if(user.profilePic !== "") { %>
+                    <%- user.profilePic %>
+                <% }else{ %>
+                    <%- user.avatar %>
+                <% } %>
             </figure>
         </a>
         <div class="user-intro">
@@ -18,15 +22,21 @@
                     <li><a href="./followers"><b><%= user.totalFollowedBy %></b> followers</a></li>
                 </ul>
                 <ul class="user-actions">
-                    <% for(let link of userActions) { %>
-                        <li class="user-action">
-                            <form action="<%= link.route %>" method="POST">
-                                <input type="hidden" name="username" value="<%= user.username %>">
-                                <button type="submit"><%= link.name %></button>
-                            </form>
-                        </li>
-                    <% } %>
+                    <li class="user-action">
+                        <button type="button" id="edit-picture">Edit picture</button>
+                    </li>
                 </ul>
+                <div class="edit-picture-container">
+                    <form action="/community/<%= user.username %>/edit-picture" id="edit-picture-form" method="POST" enctype="multipart/form-data">
+                        <label for="user-profile-pic">Upload Image:</label>
+                        <input type="file" accept="image/*" id="user-profile-pic" name="user-profile-pic">
+                        <button type="submit">Upload</button>
+                    </form>
+                    <form action="/community/<%= user.username %>/delete-picture" id="delete-picture-form" method="POST">
+                        <input type="hidden" name="username" value="<%= user.username %>">
+                        <button type="submit">Delete</button>
+                    </form>
+                </div>
             </div>
         </div>
     </section>

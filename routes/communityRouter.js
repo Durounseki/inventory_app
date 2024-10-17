@@ -29,6 +29,9 @@ communityRouter.get("/:username/settings", communityController.getProfileSetting
 communityRouter.post("/:username/settings", communityController.postSettings);
 communityRouter.get("/:username/danced", communityController.getProfileDanced);
 communityRouter.get("/:username/want-to-dance", communityController.getProfileWantToDance);
+//Profile picture
+communityRouter.post("/:username/edit-picture", communityController.postEditPicture);
+communityRouter.post("/:username/delete-picture", communityController.postDeletePicture);
 //Follow, Danced, Want to dance
 communityRouter.post("/follow", communityController.postFollow);
 communityRouter.post("/unfollow", communityController.postUnfollow);

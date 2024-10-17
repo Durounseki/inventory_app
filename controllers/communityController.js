@@ -10,6 +10,13 @@ import {loginValidators, signupValidators, forgotPasswordValidators, resetPasswo
 //Authentication
 import {authenticateUser, signUpUser, ensureAuthenticated, verifyUser, sendResetToken, passwordResetAuthenticate, resetPassword } from './auth.js';
 
+// Handle file uploads
+import multer from 'multer';
+//Set up storage
+const storage = multer.memoryStorage();
+//Configure cloud storage
+const upload = multer({storage: storage});
+
 //Render initial page
 async function showDashboard(req,res){
     //Handle queries
@@ -508,6 +515,23 @@ const postSettings = [
         res.json({currentUser: currentUser});
     }
 ]
+const postEditPicture = [
+    upload.single('user-profile-pic'),
+    async (req,res,next) => {
+        const profilePic = req.file.buffer.toString('base64');
+        const currentUser = req.app.locals.currentUser;
+        currentUser.profilePic = `<img src="data:${req.file.mimetype};base64,${profilePic}" alt="${currentUser.username}">`;
+        res.redirect(`/community/${currentUser.username}/edit`);
+    }
+]
+
+const postDeletePicture = [
+    async (req,res,next) => {
+        const currentUser = req.app.locals.currentUser;
+        currentUser.profilePic = "";
+        res.redirect(`/community/${currentUser.username}/edit`);
+    }
+]
 
 const communityController = {
     showDashboard,
@@ -535,7 +559,9 @@ const communityController = {
     postWantToDance,
     postAcceptFollow,
     postProfileEdit,
-    postSettings
+    postSettings,
+    postEditPicture,
+    postDeletePicture
 };
 
 export default communityController;

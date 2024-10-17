@@ -39,7 +39,7 @@ const users = [
         }],
         preferences: {
             visibility: {
-                network: "public",
+                network: "private",
                 events: "public"
             }
         },

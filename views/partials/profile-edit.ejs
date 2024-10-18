@@ -2,6 +2,8 @@
                 
     <div class="form-fields-container">
         
+        <h3 class="form-section-header">General</h3>
+
         <div class="input-group">
             <label for="user-name">Name</label>
             <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
@@ -14,7 +16,7 @@
         <input type="email" id="user-email" name="user-email" autocomplete="off" style="visibility: hidden; position: absolute;">
         
         <div class="form-separator"></div>
-        <h3 class="form-section-header">Dance Styles</h2>
+        <h3 class="form-section-header">Dance Styles</h3>
         
         <div class="form-checkbox-container">
             <label for="salsa">
@@ -53,7 +55,7 @@
         </div>
         
         <div class="form-separator"></div>
-        <h3 class="form-section-header">About</h2>
+        <h3 class="form-section-header">About</h3>
         
         <div class="input-group">
             <label for="user-nationality">Nationality</label>
@@ -71,7 +73,7 @@
         </div>
         
         <div class="form-separator"></div>
-        <h3 class="form-section-header">Social Media</h2>
+        <h3 class="form-section-header">Social Media</h3>
         
         <div class="sns-container">
             <% for(sns of user.sns) { %>

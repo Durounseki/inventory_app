@@ -1,0 +1,30 @@
+<section class="details-events">
+    <% if(events.created.length > 0 || events.going.length > 0){ %>
+        <% if(events.created){ %>
+            <div class="events-created">
+                <span class="events-section-title">Adds created</span>
+                <% for(let event of events.created){ %>
+                    <%- include("./event_card.ejs",{event: event}) %>
+                <% } %>
+                <% if(events.canCreate){ %>
+                    <a class="create-event-button" href="/events/create">Create Add</a>
+                <% } %>
+            </div>
+        <% } %>
+        <% if(events.going){ %>
+            <% if(events.canSee) { %>
+                <div class="events-going">
+                    <span class="events-section-title">Events I am going</span>
+                    <% for(let event of events.going){ %>
+                        <%- include("./event_card.ejs",{event: event}) %>
+                    <% } %>
+                </div>
+            <% }else{ %>
+                <h2><%= user.name %>'s events are private</h2>
+            <% } %>
+        <% } %>
+    <% } else { %>
+        <h2>No events yet</h2>
+    <% } %>
+
+</section>

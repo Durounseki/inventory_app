@@ -7,7 +7,7 @@ const users = [
         avatar: createAvatar(shapes, {
             seed: "durounseki",
             radius: 50,
-            backgroundColor: ["202020"],
+            backgroundColor: ["181818"],
             shape1Color: ["ffa6db"],
             shape2Color: ["fff5ff"],
             shape3Color: ["b4d4ee"]
@@ -61,7 +61,7 @@ const users = [
         avatar: createAvatar(shapes, {
             seed: "dancingqueen",
             radius: 50,
-            backgroundColor: ["202020"],
+            backgroundColor: ["181818"],
             shape1Color: ["ffa6db"],
             shape2Color: ["fff5ff"],
             shape3Color: ["b4d4ee"]
@@ -105,7 +105,7 @@ const users = [
         avatar: createAvatar(shapes, {
             seed: "groovyguru",
             radius: 50,
-            backgroundColor: ["202020"],
+            backgroundColor: ["181818"],
             shape1Color: ["ffa6db"],
             shape2Color: ["fff5ff"],
             shape3Color: ["b4d4ee"]
@@ -154,7 +154,7 @@ const users = [
         avatar: createAvatar(shapes, {
             seed: "bachaterolover",
             radius: 50,
-            backgroundColor: ["202020"],
+            backgroundColor: ["181818"],
             shape1Color: ["ffa6db"],
             shape2Color: ["fff5ff"],
             shape3Color: ["b4d4ee"]

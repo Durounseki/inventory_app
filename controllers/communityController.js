@@ -214,20 +214,20 @@ const getProfileEvents = [ async(req,res,next) => {
     const user = req.app.locals.users.filter(item => item.username === profileUsername)[0];;
     const currentUser = req.app.locals.currentUser;
     let userActions;
-    let events;
+    let events = {
+        created: req.app.locals.events.filter(item => user.eventsCreated.includes(item.id)),
+        going: req.app.locals.events.filter(item => user.eventsGoing.includes(item.id)),
+    };
     const mode = "view";
     if(user === currentUser){
         userActions = ownUserActions[mode](currentUser.username);
-        events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
+        events.canCreate = true;
+        events.canSee = true;
     }else{
         userActions = otherUserActions(user.username)
-        if(canView(user.preferences.visibility.events,currentUser,user)){
-            events = req.app.locals.events.filter(item => user.eventsGoing.includes(item.id) || user.eventsCreated.includes(item.id));
-        }else{
-            events = req.app.locals.events.filter(item => user.eventsCreated.includes(item.id))
-        }
+        events.canSee = canView(user.preferences.visibility.events,currentUser,user);
+        events.canCreate = false;
     }  
-
     res.render('profile', {
         title: 'Profile',
         user: user,

@@ -10,13 +10,15 @@
         <p class="event-name">
             <%= event.name%>
         </p>
-        <p class="event-venue">
-            <% if(event.venue[0].url){ %><a href="<%= event.venue[0].url %>" rel="noopener noreferrer" target="_blank"><i class="fa-regular fa-map"></i><%= event.country %></a><% } else {%><i class="fa-regular fa-map"></i><%= event.country %><% } %>
-        </p>
-        <p class="event-sns">
-            <% for(sns of event.sns) { %>
-                <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
-            <% } %>
-        </p>
+        <div class="event-links">
+            <p class="event-venue">
+                <% if(event.venue[0].url){ %><a href="<%= event.venue[0].url %>" rel="noopener noreferrer" target="_blank"><i class="fa-regular fa-map"></i><%= event.country %></a><% } else {%><i class="fa-regular fa-map"></i><%= event.country %><% } %>
+            </p>
+            <p class="event-sns">
+                <% for(sns of event.sns) { %>
+                    <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
+                <% } %>
+            </p>
+        </div>
     </div>
 </div>

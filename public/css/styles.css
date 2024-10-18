@@ -133,14 +133,14 @@ footer{
 
 /* Event card */
 .event-card{
-    max-width: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: nowrap;
     background-color: #202020;
     border-radius: 16px;
-    padding: 16px 24px;
+    padding: 8px 16px;
     box-sizing: border-box;
 }
 
@@ -175,11 +175,11 @@ footer{
 }
 
 .event-card .event-details{
-    flex: 1;
+    flex-shrink: 1;
     text-align: left;
     margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     p{
         margin: 0;
@@ -190,10 +190,16 @@ footer{
     }
 }
 
+.event-card .event-links{
+    display: flex;
+    justify-content: space-between;
+}
+
 .event-card .event-name{
-    grid-column: 1/3;
     font-size: larger;
     font-weight: bold;
+    max-height: 23px;
+    overflow: hidden;
 }
 
 .event-card .event-venue, .event-card .event-sns{
@@ -584,7 +590,7 @@ label input:checked ~ .custom-checkbox{
     box-sizing: border-box;
     flex: 1;
     gap: 24px;
-    padding: 24px;
+    padding: 16px;
 }
 .user-banner, .user-stats, .user-actions{
     display: flex;
@@ -679,9 +685,9 @@ label input:checked ~ .custom-checkbox{
     box-shadow: 2px 2px 2px #000000cc;
 }
 
-.details-events, .details-dancers{
+.details-dancers{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
     gap: 16px;
     align-items: center;
     justify-items: center;
@@ -698,11 +704,11 @@ pre{
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: nowrap;
     background-color: #202020;
     border-radius: 16px;
-    padding: 16px 24px;
+    padding: 8px 16px;
     box-sizing: border-box;
 }
 
@@ -710,14 +716,16 @@ pre{
     width: 60px;
     height: 60px;
     margin: 0;
+    display: flex;
+    align-items: center;
 }
 
 .user-card .user-details{
-    flex: 1;
+    flex-shrink: 1;
     text-align: left;
     margin: 0;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
     p{
         margin: 0;
@@ -726,10 +734,15 @@ pre{
         display: flex;
         gap: 8px;
     }
+    width: 100%;
+}
+
+.user-card .user-links{
+    display: flex;
+    justify-content: space-between;
 }
 
 .user-card .user-name{
-    grid-column: 1/3;
     font-size: larger;
     font-weight: bold;
 }
@@ -799,6 +812,12 @@ pre{
         padding: 8px 16px;
         border-radius: 16px;
         color:#fff5ff;
+    }
+    select{
+        margin-right: auto;
+    }
+    button{
+        margin-left: auto;
     }
     select:focus{
         outline: none;
@@ -927,4 +946,53 @@ textarea:focus{
     padding-left: 0;
     position: relative;
     margin-right: auto;
+}
+
+.details-events{
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.events-created, .events-going{
+    width: 100%;
+    padding: 0 8px;
+    padding-bottom: 24px;
+    border: solid 1px #ffa6db;
+    border-radius: 16px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.events-section-title{
+    position: relative;
+    top: -0.75em;
+    margin: 0;
+    padding: 0 8px;
+    margin-left: 8px;
+    background-color: #141414;
+    font-size: 1em;
+    color: #ffa6db;
+    width: max-content;
+}
+
+.create-event-button{
+    margin-left: auto;
+    margin-top: 16px;
+    padding: 8px 16px;
+    border-radius: 16px;
+    background-color: #ffa6db;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 5px 2px 5px #000000cc;
+}
+
+.create-event-button:hover, .create-event-button:focus{
+    background-color: #fff5ff;
+    color:#ffa6db;
+    outline: none;
 }

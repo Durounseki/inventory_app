@@ -6,13 +6,15 @@
         <p class="user-name">
             <%= user.name%>
         </p>
-        <p class="user-location">
-            <i class="fa-regular fa-map"></i><%= user.location %>
-        </p>
-        <p class="user-sns">
-            <% for(sns of user.sns) { %>
-                <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
-            <% } %>
-        </p>
+        <div class="user-links">
+            <p class="user-location">
+                <i class="fa-regular fa-map"></i><%= user.location %>
+            </p>
+            <p class="user-sns">
+                <% for(sns of user.sns) { %>
+                    <a href="<%= sns.url %>" aria-label="<%= sns.name %>"><i class="<%= sns.faClass %>"></i></a>
+                <% } %>
+            </p>
+        </div>
     </div>
 </div>

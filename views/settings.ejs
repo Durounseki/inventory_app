@@ -28,17 +28,16 @@
                 </ul>
                 <div class="edit-picture-container">
                     <form action="/community/<%= user.username %>/edit-picture" id="edit-picture-form" method="POST" enctype="multipart/form-data">
-                        <label for="user-profile-pic">Upload Image:</label>
-                        <input type="file" accept="image/*" id="user-profile-pic" name="user-profile-pic">
-                        <button type="submit">Upload</button>
-                    </form>
-                    <form action="/community/<%= user.username %>/delete-picture" id="delete-picture-form" method="POST">
-                        <input type="hidden" name="username" value="<%= user.username %>">
-                        <button type="submit">Delete</button>
+                        <div class="form-fields-container">
+                            <label for="user-profile-pic">Upload Image:</label>
+                            <input type="file" accept="image/*" id="user-profile-pic" name="user-profile-pic">
+                            <button type="submit" class="form-button" id="upload-picture-button">Delete Picture</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
+        
     </section>
     <section class="user-details">
         <nav>

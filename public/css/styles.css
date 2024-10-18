@@ -584,18 +584,19 @@ label input:checked ~ .custom-checkbox{
 .profile-container{
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100vw;
+    box-sizing: border-box;
     flex: 1;
     gap: 24px;
     padding: 24px;
 }
-.user-banner, .user-intro, .user-stats, .user-actions{
+.user-banner, .user-stats, .user-actions{
     display: flex;
 }
 
-.user-banner, .user-intro{
+.user-banner{
     gap: 24px;
-    align-items: center;
+    align-items: start;
 }
 
 .user-intro .name, .user-stats{
@@ -634,10 +635,11 @@ label input:checked ~ .custom-checkbox{
 }
 
 .profile-picture{
-    width: 120px;
-    height: 120px;
+    width: clamp(60px,80px,120px);
+    height: clamp(60px,80px,120px);
     border-radius: 50%;
     flex-shrink: 0;
+    margin: 0;
 }
 
 .profile-picture img{
@@ -646,71 +648,37 @@ label input:checked ~ .custom-checkbox{
     border-radius: 50%;
 }
 
+.user-details nav {
+    width: 100%;
+}
 .user-details nav ul{
+    width: 100%;
+    background-color: #202020;
     margin: 0;
+    margin-bottom: 16px;
     display: flex;
     gap: 16px;
-    padding: 0;
+    padding: 6px;
+    box-sizing: border-box;
     list-style-type: none;
-    padding: 0 32px;
+    border: solid 1px #ffa6db;
+    border-radius: 24px;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
 .details-tab{
     padding: 8px 32px;
 }
 
+.details-tab:hover{
+    background-color: #ffa6db22;
+    border-radius: 16px;
+}
+
 .details-tab.active{
     background-color: #ffa6db;
-    border-radius: 8px 8px 0 0;
-    position: relative;
-}
-
-.details-tab.active a::before, .details-tab.active a::after{
-    --border-radius: 16px;
-    content: "";
-    position: absolute;
-    background-color: #141414;
-    bottom: 0;
-    width: var(--border-radius);
-    height: var(--border-radius);
-    border-radius: 50%;
-}
-
-.details-tab.active a::before{
-    left: calc(var(--border-radius) * -1);
-
-}
-.details-tab.active a::after{
-    right: calc(var(--border-radius) * -1);
-}
-
-.tab-filler{
-    opacity: 0;
-}
-
-.details-tab.active .tab-filler{
-    opacity: 1;
-    --border-radius: 16px;
-    position: absolute;
-    background-color: #ffa6db;
-    bottom: 0;
-    width: calc(var(--border-radius) * 0.5);
-    height: calc(var(--border-radius) * 0.5);
-}
-
-.tab-filler:first-child{
-    left: calc(var(--border-radius) * -0.5);
-}
-
-.tab-filler{
-    right: calc(var(--border-radius) * -0.5);
-}
-
-
-.details-content{
-    border: solid 1px #ffa6db;
     border-radius: 16px;
-    padding: 32px;
 }
 
 .details-events, .details-dancers{
@@ -729,7 +697,7 @@ pre{
 
 /* User card */
 .user-card{
-    max-width: 400px;
+    width: 100%;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -790,10 +758,16 @@ pre{
 
 .form-fields-container{
     max-width: 600px;
-    display: grid;
-    grid-template-columns: max-content 1fr;
-    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .form-fields-container {
+        grid-template-columns: 100%;
+    }
 }
 
 .form-section-header{
@@ -807,12 +781,14 @@ pre{
     gap: 8px;
     transition: height 0.3s ease-in-out;   
 }
+
 .sns-group{
     background-color: #202020;
     padding: 8px 16px;
     border-radius: 24px;
     color:#fff5ff;
     display: flex;
+    flex-wrap: wrap;
     input{
         flex: 1;
     }
@@ -848,11 +824,14 @@ pre{
 .form-fields-container label{
     align-self: start;
     margin-top: 8px;
+    padding-left: 16px;
+    font-size: smaller;
 }
 
 .other-style-container, .delete-account-password-container{
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
 }
 
 .form-button{
@@ -915,4 +894,17 @@ textarea:focus{
 
 .delete-account-warning{
     grid-column: 1 / 3;
+}
+
+.edit-picture-container{
+    display: none;
+}
+.edit-picture-container.show{
+    display: block;
+}
+
+.input-group{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }

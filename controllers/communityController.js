@@ -155,7 +155,7 @@ const infoTabs = (username) => [
 
 const editTabs = (username) => [
     {
-        name: "Edit Profile",
+        name: "Profile",
         href: `/community/${username}/edit`
     },
     {
@@ -204,6 +204,7 @@ const getProfileAbout = [ async(req,res,next) => {
             : {...tab, class: "details-tab"}
         ),
         info: "about",
+        script: "profile.js"
     })
 }]
 
@@ -238,7 +239,8 @@ const getProfileEvents = [ async(req,res,next) => {
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        info: "events"
+        info: "events",
+        script: "profile.js"
     })
 }]
 
@@ -257,7 +259,7 @@ const getProfileEdit = [ async(req,res,next) => {
             user: currentUser,
             userActions: userActions,
             userTabs: editTabs(user.username).map(tab => 
-                tab.name === "Edit Profile"
+                tab.name === "Profile"
                 ? {...tab, class: "details-tab active"}
                 : {...tab, class: "details-tab"}
             ),
@@ -326,7 +328,8 @@ const getProfileDanced = [ async(req,res,next) => {
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        info: "community"
+        info: "community",
+        script: "profile.js"
       })
 }]
 
@@ -361,7 +364,8 @@ const getProfileWantToDance = [ async(req,res,next) => {
             ? {...tab, class: "details-tab active"}
             : {...tab, class: "details-tab"}
         ),
-        info: "community"
+        info: "community",
+        script: "profile.js"
     })
 }]
 

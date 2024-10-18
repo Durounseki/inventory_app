@@ -2,8 +2,10 @@
                 
     <div class="form-fields-container">
         
-        <label for="user-name">Name</label>
-        <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
+        <div class="input-group">
+            <label for="user-name">Name</label>
+            <input type="text" name="user-name" id="user-name" <% if(user.name) { %> value="<%= user.name %>"<% } %> placeholder="Your name" >
+        </div>
         
         <label for="user-greeting">Greeting</label>
         <input type="text" name="user-greeting" id="user-greeting" <% if(user.greeting) { %> value="<%= user.greeting %>"<% } %> placeholder="Let's dance together!">
@@ -47,20 +49,26 @@
         <label for="other">Other</label>
         <div class="other-style-container">
             <input type="text" id="other">
-            <button type="button" id="user-add-style" class="form-button">Add style</button>
+            <button type="button" id="user-add-style" class="form-button">Add</button>
         </div>
         
         <div class="form-separator"></div>
         <h3 class="form-section-header">About</h2>
         
-        <label for="user-nationality">Nationality</label>
-        <input type="select" name="user-nationality" id="user-nationality" value="<%= user.nationality%>">
+        <div class="input-group">
+            <label for="user-nationality">Nationality</label>
+            <input type="select" name="user-nationality" id="user-nationality" value="<%= user.nationality%>">
+        </div>
         
-        <label for="user-location">Location</label>
-        <input type="select" name="user-location" id="user-location" value="<%= user.country%>">
+        <div class="input-group">
+            <label for="user-location">Location</label>
+            <input type="select" name="user-location" id="user-location" value="<%= user.country%>">
+        </div>
         
-        <label for="user-bio">Bio</label>
-        <textarea id="user-bio" name="user-bio" placeholder="Share your dance journey!"><%= user.bio %></textarea>
+        <div class="input-group">
+            <label for="user-bio">Bio</label>
+            <textarea id="user-bio" name="user-bio" placeholder="Share your dance journey!"><%= user.bio %></textarea>
+        </div>
         
         <div class="form-separator"></div>
         <h3 class="form-section-header">Social Media</h2>
